@@ -7,8 +7,8 @@ import RPi.GPIO as GPIO
 
 #display
 
-serial = spi(device=0,port=0)
-
+#serial = spi(device=0,port=0) #uncomment for spi display
+serial = i2c(port=1, address=0x3C)
 device = sh1106(serial)
 virtual = viewport(device, width=device.width, height=768)
 
