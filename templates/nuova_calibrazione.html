@@ -1,0 +1,548 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>ISP</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
+
+    <meta name="theme-color" content="#712cf9">
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/cover.css" rel="stylesheet">
+  </head>
+
+  <body class="d-flex h-100 text-center text-bg-dark">    
+        
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+            <div style="text-align: center;">
+                <h3>Indoor Positioning System</h3>
+            </div>
+            <div>
+                <nav class="nav nav-masthead justify-content-center float-md-end">
+                    <a class="nav-link fw-bold py-1 px-0" href="index">Home</a>
+                    <a class="nav-link fw-bold py-1 px-0"  href="sm?k=b">Misurazione Singola</a>
+                    <a class="nav-link fw-bold py-1 px-0" aria-current="page" href="cali">Calibrazione</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="meas">New Misura</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="datx">Consulta Dati</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="live">Misurazione Live</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="dwmisu">Download Misurazioni</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="config">Configurazione</a>
+                    <a class="nav-link fw-bold py-1 px-0 active" href="nuova_calibrazione">Nuova Calibrazione</a>
+                </nav>
+            </div>
+        </header>
+        <main class="px-3">
+            <h1>Calibrazione</h1>
+          <div id="corpo">
+            <h3>Inserisci Latitudine e Longitudine</h3>
+            <form>
+                <div class="row">
+                    <div class="col-1">
+                    </div>
+                    <div class="form-group col-4">
+                        <label for="Lat">Latitudine</label>
+                        <input type="text" class="form-control" id="lat" placeholder="">
+                      </div>
+                      <div class="col-2">
+                      </div>
+                    <div class="form-group col-4">
+                        <label for="Long">Longitudine</label>
+                        <input type="text" class="form-control" id="long" placeholder="">
+                    </div>
+                </div>
+              </form>
+                <div class="form-row">
+                    <button class="btn btn-lg btn-light fw-bold border-white bg-white" onclick="getLocation()">Da GPS</button>
+                </div>
+            
+            <h3>Inserisci quanti campioni prelevare al secondo durante la calibrazione</h3>
+            <form>
+                <div class="row" style="margin:10px">
+                    
+                     <div class="form-row">
+                        <select class="form-control" name="sample-frequency" id="sample-frequency">
+                            <option value="1">1 campione/secondo</option>
+                            <option value="5">5 campioni/secondo</option>
+                            <option value="10">10 campioni/secondo</option>
+                            <option value="20">20 campioni/secondo</option>
+                            <option value="50">50 campioni/secondo</option>
+                        </select>
+                      </div>
+
+                </div>
+            </form>
+            
+            <div class="row">
+
+                
+                <p class="lead" style="border: 1px groove; margin:10px">
+               <!--
+                    Premi "Inizia Calibrazione" per far partire l'acqusizione dei dati dal sensore magnetico.
+                    Durante il processo, sarà necessario ruotare il dispositivo liberamente per quanto tempo si vuole.
+                    Per far finire il processo di acquisizione, premi "Fine Calibrazione" 
+                -->
+                </p>
+                <p class="lead">
+                    <button class="btn btn-lg btn-light fw-bold border-white bg-white" onclick="inizia_calibrazione()">Inizia Calibrazione</button>
+                    <button class="btn btn-lg btn-light fw-bold border-white bg-white" onclick="termina_calibrazione()">Fine Calibrazione</button>
+                </p>
+            </div>
+            
+            <div class="row">
+                <p id="calib-feedback">
+                    
+                </p>
+            </div>
+
+            <div class="row">
+              <p class="lead">Visualizza i grafici dell'ultima calibrazione</p>
+              <p class="lead">
+                  <button class="btn btn-success" id="btngrafici" onclick="richiedi_grafici()">View</button>
+              </p>
+            </div>
+
+            <div id="plot-data" class="row">
+                
+            </div>
+
+          </div>
+          <div id="bbannulla">
+        </div>
+        </main>
+        <footer class="mt-auto text-white-50">
+            <p>Create by  <p class="text-white">Papa Andrea Valentino </p></p>
+        </footer>
+    </div>
+  </body>
+
+  <script>
+    var lat = document.getElementById("lat");
+    var long = document.getElementById("long");
+    
+    function getLocation()
+    {
+      if (navigator.geolocation)
+      {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      }
+      else
+      { 
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+    
+    function showPosition(position) 
+    {
+        lat.value = position.coords.latitude;
+        long.value = position.coords.longitude;
+    }
+    
+    function showError(error)
+    {
+        switch(error.code)
+        {
+            case error.PERMISSION_DENIED:
+                alert("User denied the request for Geolocation.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Location information is unavailable.");
+                break;
+            case error.TIMEOUT:
+                alert("The request to get user location timed out.");
+                break;
+            case error.UNKNOWN_ERROR:
+                alert("An unknown error occurred.");
+                break;
+        }
+    }
+
+    function sleep(milliseconds)
+    {
+        const date = Date.now();
+        let currentDate = null;
+        do
+        {
+            currentDate = Date.now();
+        }while(currentDate - date < milliseconds);
+    }
+
+	function inizia_calibrazione()
+	{
+        var sample_frequency = document.getElementById("sample-frequency").value;
+        
+		var lat1 = document.getElementById("lat").value.toString();
+		var lon1 = document.getElementById("long").value.toString();
+		var key = "EAU2y";
+		var ti = -9;
+		var resultFormat="json";
+		const url = "https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?" + new URLSearchParams({lat1, lon1, key,resultFormat});
+		fetch(url)
+			.then((response) => {
+				if(!response.ok)
+				{
+					throw new Error(`HTTP error ${response.status}`);
+					req(ti);
+				}
+				return response.text();
+			})
+			.then((text) => {
+                
+                var mag_data = JSON.parse(text);
+                ti = mag_data["result"][0]["totalintensity"];
+                ti = ti=ti/1000;
+                			
+				fetch("/nuova_calibrazione", {
+						method:"POST",
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+                        
+                        body: JSON.stringify({ "ti":ti, "sample-frequency":sample_frequency })
+					}).then((response) => {
+                        return response.text();
+                    }).then((text) => {
+                        document.getElementById("calib-feedback").innerHTML = text;
+                    });
+				
+			});
+	}
+	
+	function termina_calibrazione()
+	{
+		fetch("/termina_calibrazione", {
+				method:"GET",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+			}).then((response) => {
+                return response.text();
+            }).then((text) => {
+                document.getElementById("calib-feedback").innerHTML = text;
+            });
+	}
+    
+    async function _richiedi_grafico(type)
+    {
+        return fetch("/view_calibration_plot", {
+				method:"POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+                body: JSON.stringify({ "plot_type":type })
+			}).then((response) => {
+                return response.blob();
+            }).then((blob) => {
+                var url = URL.createObjectURL(blob);
+                
+                console.log(url);
+                
+                document.getElementById("plot-data").innerHTML += "<div class='row'> <img style='margin:10px'src=" + url + "> </img> </div>"
+
+            });
+    }
+    
+    async function richiedi_grafici()
+    {
+        document.getElementById("plot-data").innerHTML = ""
+        
+        await _richiedi_grafico("3d");
+        await _richiedi_grafico("xy");
+        await _richiedi_grafico("yz");
+        await _richiedi_grafico("xz");
+    }
+	
+        function calibra()
+        {
+			var lat1 = document.getElementById("lat").value.toString();
+            var lon1 = document.getElementById("long").value.toString();
+            var key = "EAU2y";
+            var ti = -9;
+            var resultFormat="json";
+            const url = "https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?" + new URLSearchParams({lat1, lon1, key,resultFormat});
+            fetch(url)
+                .then((response) => {
+                    if(!response.ok)
+                    {
+                        throw new Error(`HTTP error ${response.status}`);
+                        req(ti);
+                    }
+                    return response.text();
+                })
+                .then((data) => {
+                    console.log(data);
+                    var mydata = JSON.parse(data);
+                    console.log(mydata["result"][0]["totalintensity"]);
+                    ti = mydata["result"][0]["totalintensity"];
+                    ti = ti=ti/1000;
+                    req(ti, 0, 800);
+                })
+                .catch((error) => {
+                  req(ti, 0, 800);
+                  // ...handle/report error...
+                });
+        }
+        function req(ti, cod, temp)
+        {
+            const k = "b";
+            const url = "/cali";
+            fetch(url, {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ "k": k, "cod":cod, "ti":ti })
+            })
+            .then((response) => {
+                if(!response.ok){
+                    throw new Error(`HTTP error ${response.status}`);
+                }
+                return response.text();
+              })
+            .then((data) => {
+                console.log(data);
+                var mydata = JSON.parse(data);
+                var codrisp = (mydata["codi"]);
+                if(codrisp!=cod)
+                {
+                  if(codrisp==1)
+                  {
+                    document.getElementById("corpo").innerHTML = "<h3>.....in corso</h3><br><h2>Ruota lungo l'asse  X </h2> <div class='row'><div class='col-4'></div><div class='col-4'><br><img src='{{ url_for('static', filename='load.gif')}}' width='60%'/></div></div>";
+                    document.getElementById("bbannulla").innerHTML = "<br><p class='lead'><button class='btn btn-lg btn-light fw-bold border-white bg-white' onclick='annulla()'>Annula</button></p>";
+                  }
+                  if(codrisp==2)
+                  {
+                    document.getElementById("corpo").innerHTML = "<h3>.....in corso</h3><br><h2>Ruota lungo l'asse  Y </h2> <div class='row'><div class='col-4'></div><div class='col-4'><br><img src='{{ url_for('static', filename='load.gif')}}' width='60%'/></div></div>";
+                    document.getElementById("bbannulla").innerHTML = "<br><p class='lead'><button class='btn btn-lg btn-light fw-bold border-white bg-white' onclick='annulla()'>Annula</button></p>";
+                    temp=800;
+                  }
+                  if(codrisp==3)
+                  {
+                    document.getElementById("corpo").innerHTML = "<h3>.....in corso</h3><br><h2>Ruota lungo l'asse  Z </h2> <div class='row'><div class='col-4'></div><div class='col-4'><br><img src='{{ url_for('static', filename='load.gif')}}' width='60%'/></div></div>";
+                    document.getElementById("bbannulla").innerHTML = "<br><p class='lead'><button class='btn btn-lg btn-light fw-bold border-white bg-white' onclick='annulla()'>Annula</button></p>";
+                    temp=800;
+                  }
+                  if(codrisp==30)
+                  {
+                    document.getElementById("corpo").innerHTML = "<h3>CALIBRAZIONE COMPLETATA</h3><br><h2>Calcolo della matrice di calibrazione in corso</h2>";
+                    document.getElementById("bbannulla").innerHTML = "<br><img src='{{ url_for('static', filename='load.gif')}}' width='40%'/>";
+                    temp=1000;
+                  }
+                  if(codrisp==-14)
+                  {
+                    var s = (mydata["s"]);
+                    sleep(500);
+                    document.getElementById("corpo").innerHTML = "<h3>CALIBRAZIONE COMPLETATA</h3><br><h2>A breve sarà possibile visualizza il rendering dei grafici</h2>";
+                    document.getElementById("bbannulla").innerHTML = "";
+                    temp=1000;
+                    
+                  }
+                  if(codrisp==-22)
+                  {
+                    sleep(500);
+                    document.getElementById("corpo").innerHTML = "<h3>E' IN CORSO UN'ALTRA CALIBRAZIONE</h3>";
+                    document.getElementById("bbannulla").innerHTML = "<br><p class='lead'><button class='btn btn-lg btn-light fw-bold border-white bg-white' onclick='annulla()'>Annula</button></p>";
+                  }
+                }
+                if(codrisp==1 || codrisp==10 || codrisp==2 || codrisp==20 || codrisp==3 || codrisp==30 || codrisp==33)
+                {
+                  //console.log(temp);
+                  temp1=temp-(temp/150);
+                  req(-9,codrisp, temp1);
+                  sleep(temp);
+                }
+                
+              })
+            .catch((error) => {
+                console.log(error);
+                // ...handle/report error...
+              });
+          }
+
+          function verificaEsistenzaFile(url, callback)
+          {
+              var xhr = new XMLHttpRequest();
+              xhr.onreadystatechange = function() 
+              {
+                if (xhr.readyState === 4)
+                {
+                  if (xhr.status === 200)
+                  {
+                    callback(true);
+                  }
+                  else
+                  {
+                    callback(false);
+                  }
+                }
+              };
+              xhr.open('HEAD', url, true);
+              xhr.send();
+          }
+
+
+          function grafici()
+          {
+            var urla = '../static/cali/xy.png';
+            var urlb = '../static/cali/xz.png';
+            var urlc = '../static/cali/yz.png';
+            var urld = '../static/cali/3d.png';
+            verificaEsistenzaFile(urla, function(esiste)
+            {
+              if (esiste)
+              {
+                verificaEsistenzaFile(urlb, function(esiste)
+                {
+                  if (esiste)
+                  {
+                    verificaEsistenzaFile(urlc, function(esiste)
+                    {
+                      if (esiste)
+                      {
+                        verificaEsistenzaFile(urld, function(esiste)
+                        {
+                          if (esiste)
+                          {
+                            //alert('DISEGNOOOO')
+                            document.getElementById("corpo").innerHTML = "<h3>CALIBRAZIONE</h3><div class='row' id='xy'><div class='col-2'></div><div class='col-8'><img src='../static/cali/xy.png?"+(makestr(9))+"' width='100%'/></div></div><div class='row' id='yz'><div class='col-2'></div><div class='col-8'><img src='../static/cali/yz.png?"+(makestr(9))+"' width='100%'/></div></div><div class='row' id='xz'><div class='col-2'></div><div class='col-8'><img src='../static/cali/xz.png?"+(makestr(9))+"' width='100%'/></div></div><div class='row' id='3d'><div class='col-2'></div><div class='col-8'><img src='../static/cali/3d.png?"+(makestr(9))+"' width='100%'/></div></div>";
+                            document.getElementById("bbannulla").innerHTML = "";
+                          }
+                          else
+                          {
+                            alert('Non esiste in memoria grafica che rappresenta la calibrazione');
+                          }
+                        });
+                      }
+                      else
+                      {
+                        alert('Non esiste in memoria grafica che rappresenta la calibrazione');
+                      }
+                    });
+                  }
+                  else
+                  {
+                    alert('Non esiste in memoria grafica che rappresenta la calibrazione');
+                  }
+                });
+              }
+              else
+              {
+                alert('Non esiste in memoria grafica che rappresenta la calibrazione');
+              }
+            });
+          }
+
+          function annulla()
+          {
+            const k = "b";
+            const url = "/cali";
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "k": k, "cod":-11, "ti":-9 })
+            })
+            .then((response) => {
+                if(!response.ok){
+                    throw new Error(`HTTP error ${response.status}`);
+                }
+                return response.text();
+            })
+            .then((data) => {
+                console.log(data);
+                var mydata = JSON.parse(data);
+                var codrisp = (mydata["codi"]);
+                if(codrisp == 0)
+                {
+                  location.replace("cali");
+                }
+                else
+                {
+                    annulla();
+                }
+                
+              })
+            .catch((error) => {
+                console.log(error);
+                // ...handle/report error...
+              });
+          }
+
+
+          function makestr(length)
+          {
+              let result = '';
+              const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+              const charactersLength = characters.length;
+              let counter = 0;
+              while (counter < length)
+              {
+                  result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                  counter += 1;
+              }
+            return result;
+          }
+    </script>
+</html>

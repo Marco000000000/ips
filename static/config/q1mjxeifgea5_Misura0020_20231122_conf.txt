@@ -1,0 +1,6 @@
+nome	Misura0020
+numero	1
+wifi	1
+ble	1
+ble-macs	['7c:5d:2b:7f:96:2c']
+wifi-macs	['40:ED:00:3A:E8:8A', 'E0:E1:A9:80:61:67']

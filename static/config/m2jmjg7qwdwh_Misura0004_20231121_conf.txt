@@ -1,0 +1,5 @@
+nome	Misura0004
+numero	1
+wifi	1
+ble	1
+ble-macs	['6c:12:5c:6b:50:3b']

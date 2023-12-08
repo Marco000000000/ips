@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div id="mainContent">
+    <div id="wpaStatus">
+      <ul>
+        {% if config_hash['wpa_enabled'] == '1': %}
+          <li><a href="{{ url_for('wpa_settings') }}">Config. Mode WPA: ENABLED</a></li>
+          <li><a href="{{ url_for('wpa_settings') }}">Key: {{ config_hash['wpa_key'] }}</a></li>
+        {% endif %}
+
+        {% if config_hash['wpa_enabled'] == '0': %}
+          <li><a href="{{ url_for('wpa_settings') }}">Config. Mode WPA: DISABLED</a></li>
+      {% endif %}
+      </ul>
+    </div>
+
+    <h1>WiFi Setup</h1>
+    <div class="wifiIcon"></div>
+
+    <form action="{{ url_for('save_credentials') }}" method=post>
+      <ul>
+        <li><label for="ssid">Selezione la tua rete WiFi</label></li>
+
+        <li class="wifiNetwork">
+          <select id="ssid" name="ssid" class="form-select form-select-lg mb-3" >
+            {% for ssid in wifi_ap_array %}
+              <option value='{{ ssid }}'>{{ ssid }}</option>
+            {% endfor %}
+          </select>
+        </li>
+
+
+        <li><label for="wifi_key">Inserire la password</label></li>
+        <li><input type="text" name="wifi_key" class="form-control form-control-lg mb-3" id="pass"></li>
+        
+        
+        <input type="submit" value="Salva" class="btn btn-warning btn-lg">
+
+        <li><a href="{{ url_for('manual_ssid_entry') }}" class="manualSSIDEntry">Manual SSID entry -></a></li>
+
+        
+      </ul>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,237 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>ISP</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
+
+    <meta name="theme-color" content="#712cf9">
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+        .table{
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        th, td{
+            padding: 10px 20px;
+            border: 1px solid #ffffff;
+        }
+    
+    </style>
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/cover.css" rel="stylesheet">
+  </head>
+
+  <body class="d-flex h-100 text-center text-bg-dark">    
+        
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+            <div style="text-align: center;">
+                <h3>Indoor Positioning System</h3>
+            </div>
+            <div>
+                <nav class="nav nav-masthead justify-content-center float-md-end">
+                    <a class="nav-link fw-bold py-1 px-0" href="index">Home</a>
+                    <a class="nav-link fw-bold py-1 px-0"  href="sm?k=b">Misurazione Singola</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="cali">Calibrazione</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="meas">New Misura</a>
+                    <a class="nav-link fw-bold py-1 px-0 active"  aria-current="page" href="datx">Consulta Dati</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="live">Misurazione Live</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="dwmisu">Download Misurazioni</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="config">Configurazione</a>
+                    <a class="nav-link fw-bold py-1 px-0" href="nuova_calibrazione">Nuova Calibrazione</a>
+                </nav>
+            </div>
+        </header>
+        <main class="px-3">
+            <h1>Consulta Dati</h1>
+            <br>
+            <div class="container" id="body">
+
+            </div>
+            
+        </main>
+        <footer class="mt-auto text-white-50">
+            <p>Create by  <p class="text-white">Papa Andrea Valentino </p></p>
+        </footer>
+    </div>
+
+    <script>
+      
+      var mydata;
+
+      window.onload = function() 
+      {
+        const url = "/dati";
+        let table = document.createElement('table');
+        let thead = document.createElement('thead');
+        let tbody = document.createElement('tbody');
+        table.appendChild(thead);
+        table.appendChild(tbody);
+
+
+        fetch(url)
+          .then((response) => {
+            if(!response.ok){
+              throw new Error(`HTTP error ${response.status}`);
+            }
+            return response.text();
+          })
+          .then((data) => {
+            mydata = JSON.parse(data);
+            // Adding the entire table to the body tag
+            document.getElementById('body').appendChild(table);
+            // Creating and adding data to first row of the table
+            let row_1 = document.createElement('tr');
+            let heading_1 = document.createElement('th');
+            heading_1.innerHTML = "Nome";
+            let heading_2 = document.createElement('th');
+            heading_2.innerHTML = "Num Camp.";
+            let heading_3 = document.createElement('th');
+            heading_3.innerHTML = "Ble";
+            let heading_4 = document.createElement('th');
+            heading_4.innerHTML = "Wi-Fi";
+            let heading_5 = document.createElement('th');
+            heading_5.innerHTML = "Visualizza";
+            let heading_6 = document.createElement('th');
+            heading_6.innerHTML = "Edit";
+
+            row_1.appendChild(heading_1);
+            row_1.appendChild(heading_2);
+            row_1.appendChild(heading_3);
+            row_1.appendChild(heading_4);
+            row_1.appendChild(heading_5);
+            row_1.appendChild(heading_6);
+            thead.appendChild(row_1);
+            
+            var length = 0;
+            for(var k in mydata)
+            {
+              if(mydata.hasOwnProperty(k))
+              {
+                // Creating and adding data to second row of the table
+                let row_i = document.createElement('tr');
+                let row_i_data_1 = document.createElement('td');
+                row_i_data_1.innerHTML = mydata[k]['Nome'];
+                let row_i_data_2 = document.createElement('td');
+                row_i_data_2.innerHTML = mydata[k]['Num'];
+                let row_i_data_3 = document.createElement('td');
+                if(mydata[k]['Ble'] == 1)
+                {
+                  row_i_data_3.innerHTML = "<img src='{{ url_for('static', filename='bl.png')}}' width='90%'/>";
+                }
+                else
+                {
+                  row_i_data_3.innerHTML = "";
+                }
+                let row_i_data_4 = document.createElement('td');
+                if(mydata[k]['WiFi'] == 1)
+                {
+                  row_i_data_4.innerHTML = "<img src='{{ url_for('static', filename='wifi.png')}}' width='90%'/>";
+                }
+                else
+                {
+                  row_i_data_4.innerHTML = "";
+                }
+                var t = mydata[k]['Token'];
+                let row_i_data_5 = document.createElement('td');
+                row_i_data_5.innerHTML = "<img src='{{ url_for('static', filename='res.png')}}' width='50%'  onclick='visualizza("+k+")'/>";
+                let row_i_data_6 = document.createElement('td');
+                row_i_data_6.innerHTML = "<img src='{{ url_for('static', filename='edit.png')}}' width='50%'  onclick='edit("+k+")'/>";
+
+                row_i.appendChild(row_i_data_1);
+                row_i.appendChild(row_i_data_2);
+                row_i.appendChild(row_i_data_3);
+                row_i.appendChild(row_i_data_4);
+                row_i.appendChild(row_i_data_5);
+                row_i.appendChild(row_i_data_6);
+                tbody.appendChild(row_i);
+                length++;
+              }
+            }
+            console.log(length);
+            
+            
+        })
+        .catch((error) => {
+            // ...handle/report error...
+        });
+
+      };
+
+      function edit(i)
+      {
+          var t = mydata[i]['Token'];
+          var n = mydata[i]['Nome'];
+          var d = mydata[i]['Data'];
+          location.replace("edit?token="+t+"_"+n+"_"+d);
+      }
+
+
+      function visualizza(i)
+      {
+          var t = mydata[i]['Token'];
+          var n = mydata[i]['Nome'];
+          var d = mydata[i]['Data'];
+          location.replace("pagend?token="+t+"_"+n+"_"+d);
+      }
+
+      </script> 
+  </body>
+
+</html>

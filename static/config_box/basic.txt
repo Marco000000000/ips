@@ -1,0 +1,7 @@
+odr	80
+cali	200
+inter	cubic
+colormap	jet
+ble	1.5
+server	http://192.168.1.0
+port	80

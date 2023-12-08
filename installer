@@ -1,0 +1,25 @@
+#!/bin/sh 
+sudo raspi-config nonint do_i2c 0
+sudo raspi-config nonint do_rgpio 0
+
+sudo raspi-config nonint do_spi 0
+sudo systemctl enable pigpiod
+
+
+pathLocale=$(readlink -f .)
+cp -r $pathLocale/. /home/project
+cd /home/project
+chmod +x scriptStarter
+python -m venv .venv
+. venv/bin/activate
+.venv/bin/python3 setup.py
+
+cp service.txt /etc/systemd/system/myService.service
+chmod 644 /etc/systemd/system/myService.service
+systemctl daemon-reload
+systemctl enable myService.service
+read -p "Reboot needed , do you want to restart now? [y,n]" doit 
+case $doit in  
+  y|Y) reboot;;  
+  *) printf "\nreboot rinviato\n" ;; 
+esac
