@@ -7,14 +7,32 @@ sudo systemctl enable pigpiod
 
 
 pathLocale=$(readlink -f .)
-cp -r $pathLocale/. /home/project
-cd /home/project
+
 chmod +x scriptStarter
 python -m venv .venv
 . venv/bin/activate
 .venv/bin/python3 setup.py
 
-cp service.txt /etc/systemd/system/myService.service
+
+pathLocale=$(readlink -f .)
+
+printf "#!/bin/sh 
+sleep 3
+cd %s
+.venv/bin/python3 "home.py" 
+exit 0" $pathLocale > scriptStarter
+
+printf "[Unit]
+Description=magnetism Service
+After=multi-user.target
+Requires=network.target
+[Service]
+Type=idle
+ExecStart=/usr/bin/sudo %s/scriptStarter
+Restart=always
+RestartSec=10
+[Install]
+WantedBy=multi-user.target" $pathLocale > /etc/systemd/system/myService.service
 chmod 644 /etc/systemd/system/myService.service
 systemctl daemon-reload
 systemctl enable myService.service
