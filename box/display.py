@@ -6,7 +6,7 @@ from luma.core.virtual import viewport
 import RPi.GPIO as GPIO
 
 #display
-
+#serial = i2c(port=1, address=0x3C)#uncomment for i2c display
 serial = spi(device=0,port=0)
 
 device = sh1106(serial)
