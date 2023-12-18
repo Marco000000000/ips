@@ -20,7 +20,6 @@ from flask import Flask, render_template, request, session, jsonify, send_file
 import display
 import measure
 import cal
-import led
 import threading
 from urllib.parse import unquote
 from werkzeug.utils import secure_filename
@@ -417,7 +416,6 @@ def ta(nume):
     rawData = np.zeros((0,3), dtype='float')
     print(rawData)
     #if asse == 'X':
-    led.rosso('ON')
     rawData = np.append(rawData, cal.asse(nume,'1', sensor), axis=0)
     with open('cod.txt', mode='r') as f:
         codn = int(f.read())
@@ -431,12 +429,10 @@ def ta(nume):
     with open("cod.txt", mode='w') as f:
         f.write(str('10'))
     f.close()
-    led.rosso('OFF')
     time.sleep(1)
     with open("cod.txt", mode='w') as f:
         f.write(str('2'))
     f.close()
-    led.giallo('ON')
     rawData = np.append(rawData, cal.asse(nume,'2', sensor), axis=0)
     with open('cod.txt', mode='r') as f:
         codn = int(f.read())
@@ -450,12 +446,10 @@ def ta(nume):
     with open("cod.txt", mode='w') as f:
         f.write(str('20'))
     f.close()
-    led.giallo('OFF')
     time.sleep(1)
     with open("cod.txt", mode='w') as f:
         f.write(str('3'))
     f.close()
-    led.verde('ON')
     rawData = np.append(rawData, cal.asse(nume,'3', sensor), axis=0)
     with open('cod.txt', mode='r') as f:
         codn = int(f.read())
@@ -473,37 +467,30 @@ def ta(nume):
     #    f.write(str('33'))
     #f.close()
     #time.sleep(1)
-    led.verde('OFF')
         
 def vta(nume, asse):
     rawData = np.zeros((0,3), dtype='float')
     print(rawData)
     if asse == 'X':
-        led.rosso('ON')
         rawData = np.append(rawData, cal.asse(nume,'1', sensor), axis=0)
         with open("cod.txt", mode='w') as f:
             f.write(str('10'))
         f.close()
-        led.rosso('OFF')
         cal.save(rawData, nume, asse)
             
     if asse == 'Y':
-        led.giallo('ON')
         rawData = np.append(rawData, cal.asse(nume,'2', sensor), axis=0)
         with open("cod.txt", mode='w') as f:
             f.write(str('20'))
         f.close()
-        led.giallo('OFF')
         cal.save(rawData, nume, asse)
         
     if asse == 'Z':
-        led.verde('ON')
         rawData = np.append(rawData, cal.asse(nume,'3', sensor), axis=0)
         
         with open("cod.txt", mode='w') as f:
             f.write(str('30'))
         f.close()
-        led.verde('OFF')
         cal.save(rawData, nume, asse)
         
 
@@ -522,9 +509,6 @@ def meas():
 @app.route("/misu")
 def misu():
     prnt()
-    led.rosso('ON')
-    led.giallo('ON')
-    led.verde('ON')
     stato = "ok"
     if request.method == 'GET':
         token = request.args.get('token')
@@ -599,9 +583,7 @@ def misu():
     if stato != "ko":        
         good(token, punto)
     
-    led.rosso('OFF')
-    led.giallo('OFF')
-    led.verde('OFF')
+
     return (stato)
 
 @app.route("/end")
@@ -805,9 +787,7 @@ def prnt():
 if __name__ == "__main__":
     try:
         o=-1
-        led.rosso('ON')
-        led.giallo('ON')
-        led.verde('ON')
+
         display.scrivi("Loading...","","","","")
         time.sleep(10.5)
         a=0
@@ -869,9 +849,7 @@ if __name__ == "__main__":
         key = os.getcwd() +'/priv_key.pem'
         nssid=os.popen("sudo iwgetid -r").read()
         display.scrivi("    IPS","","Dispostivo Pronto","WiFi: "+nssid,iip+":443")
-        led.rosso('OFF')
-        led.giallo('OFF')
-        led.verde('OFF')
+
         app.run(debug=True, host=iip, port = int(443), ssl_context=('cert.pem', 'priv_key.pem'))
     except KeyboardInterrupt:
         pass
