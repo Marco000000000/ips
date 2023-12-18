@@ -1,0 +1,2 @@
+output_data_rate bluetooth_scan_time magnetic_map_interpolation magnetic_map_color server_ip server_port
+40.0 0.4 linear jet http://192.168.216.56 80

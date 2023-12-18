@@ -1,5 +1,0 @@
-#!/bin/sh 
-sleep 3
-cd /home/pi/Scaricati/myproject_231023
-.venv/bin/python3 home.py 
-exit 0

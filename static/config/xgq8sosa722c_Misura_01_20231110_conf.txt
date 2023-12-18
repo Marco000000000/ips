@@ -1,4 +1,0 @@
-nome	Misura_01
-numero	1
-wifi	0
-ble	0

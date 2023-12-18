@@ -1,5 +1,0 @@
-nome	Misura0001
-numero	1
-wifi	1
-ble	1
-ble-macs	69:aa:ec:76:c8:46

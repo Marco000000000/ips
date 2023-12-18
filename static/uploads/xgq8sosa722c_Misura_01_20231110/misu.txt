@@ -1,1 +1,0 @@
-,idp,long,lat,x,y,misu
