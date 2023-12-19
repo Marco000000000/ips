@@ -20,8 +20,7 @@ def recd():
     return a
 
 
-def load_dati():
-    
+def load_dati():    
     a = []
     col = ['Token', 'Nome', 'Data', 'Num', 'Ble', 'WiFi']
     rootdir = os.getcwd()+'/static/config'
@@ -44,11 +43,11 @@ def load_dati():
             new_row = {'Token': tokenz , 'Nome': nomez, 'Data': dataz, 'Num': num, 'Ble': ble_s, 'WiFi': wifi_s}
             a.append(new_row)
     df = pd.DataFrame(a,columns=col)
-    print(df)
+    
     result = df.to_json(orient="index")
     parsed = loads(result)
     vett = dumps(parsed, indent=4)
-    print(vett)
+    
     return vett
 
 def load_remot(server, porta):

@@ -41,6 +41,7 @@ from flask_sslify import SSLify
 
 import wifis
 import shutil
+import uuid
 
 import ast
 
@@ -632,8 +633,6 @@ def remove_measure():
     
     upload_directory_path = os.getcwd() + "/static/uploads/" + token
     
-    print("THE UPLOAD DIRECTORY PATH IS: " + upload_directory_path)
-    
     if os.path.exists(upload_directory_path):
         shutil.rmtree(upload_directory_path)
 
@@ -642,7 +641,6 @@ def remove_measure():
 @app.route("/dati")
 def datas():
     v=dati.load_dati()
-    print(dati.load_dati())
     return (v)
 
 @app.route("/datiremoto")
@@ -690,8 +688,9 @@ def uploadFile():
         year = now.strftime("%Y")
         month = now.strftime("%m")
         day = now.strftime("%d")
-        rs = randStr(chars='abcdefghijklmnopqrstuvwyxz123456789')
-        s = rs + '_' + nome + '_' + year+month+day
+        
+        s = uuid.uuid4().hex + '_' + nome + '_' + year+month+day
+        
         formatimg = (secure_filename(uploaded_img.filename).split('.')[1])
         img_filename = s + '.' + formatimg
         os.makedirs(os.getcwd() + upl_dir+s, exist_ok=True)
