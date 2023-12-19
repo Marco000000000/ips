@@ -1,1 +1,4 @@
 __pycache__/
+box/static/config
+box/static/data
+box/static/uploads
