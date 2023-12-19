@@ -169,7 +169,7 @@
                         <select class="form-control" name="colormap" id="colormap">
                             <option value="jet">Jet</option>
                             <option value="ocean">Ocean</option>
-                            <option value="gnuplot">Gnu</option>
+                            <option value="gnu">Gnu</option>
                         </select>
                       </div>
                   </div>
@@ -239,62 +239,42 @@
 </html>
 
 <script>
-  window.onload = function() 
-  {
-    const odr = document.getElementById("odr");
-    const cali = document.getElementById("cali");
-    const inter = document.getElementById("inter");
-    const colormap = document.getElementById("colormap");
-    const ble = document.getElementById("ble");
-    const server = document.getElementById("server");
-    const port = document.getElementById("port");
-    const url = "/daticonfig";
-    
-    fetch(url)
-          .then((response) => {
-            if(!response.ok){
-              throw new Error(`HTTP error ${response.status}`);
-            }
-            return response.text();
-          })
-          .then((data) => {
-                console.log(data);
-                var mydata = JSON.parse(data);
-                cali.value = mydata['cali'];
-                colormap.value = mydata['colormap'];
-                inter.value = mydata['inter'];
-                odr.value = mydata['odr'];
-                port.value = mydata['port'];
-                server.value = mydata['server'];
-                t=mydata['tempo'];
-                //if (t == 0.4)
-                //{
-                  //ble.value = "4";
-                //}
-                //else if (t == 1.3)
-                //{
-                  //ble.value = "13";
-                //}
-                //else
-                //{
-                  //ble.value = t
-                //}
-
-                //sleep(3000);
-                //var mydata = JSON.parse(data);
+    window.onload = function() 
+    {
+        const odr = document.getElementById("odr");
+        const cali = document.getElementById("cali");
+        const inter = document.getElementById("inter");
+        const colormap = document.getElementById("colormap");
+        const ble = document.getElementById("ble");
+        const server = document.getElementById("server");
+        const port = document.getElementById("port");
+        const url = "/daticonfig";
+        
+        fetch(url)
+              .then((response) => {
+                if(!response.ok){
+                  throw new Error(`HTTP error ${response.status}`);
+                }
+                return response.text();
               })
-            .catch((error) => {
-                console.log(error);
-                //sleep(3000);
-                // ...handle/report error...
-              });
-  }
+              .then((data) => {
+                    var mydata = JSON.parse(data);
+                    cali.value = mydata['cali'];
+                    colormap.value = mydata['colormap'];
+                    inter.value = mydata['inter'];
+                    odr.value = mydata['odr'];
+                    port.value = mydata['port'];
+                    server.value = mydata['server'];
+                    ble.value = mydata['ble'];
+                  })
+                .catch((error) => {
+                    console.log(error);
+                    // ...handle/report error...
+                  });
+    }
 
-
-
-
-  function sendconf()
-  {
+    function sendconf()
+    {
     const odr = document.getElementById("odr").value;
     const cali = document.getElementById("cali").value;
     const inter = document.getElementById("inter").value;
@@ -316,10 +296,10 @@
                     return response.text();
                 })
                 .then((data) => {
-                    console.log(data);
+                //  console.log(data);
                 })
                 .catch((error) => {
-                  // ...handle/report error...
+                //  ...handle/report error...
                 });
     }
 
@@ -335,26 +315,11 @@
                 if(!response.ok){
                     throw new Error(`HTTP error ${response.status}`);
                 }
-                return response.text();
-              })
-            .then((data) => {
-                console.log(data);
-                if(data == "ok")
-                {
-                  var scelta = false;
-                  //scelta = confirm("Per attuare le modifiche è necessario il ravvio della box \nRiavviare?");
-                  if(scelta)
-                  {
-                   //reboot();
-                  }
-                }
-                
               })
             .catch((error) => {
                 console.log(error);
               });
-
-  }
+    }
 
   function sleep(milliseconds)
     {
