@@ -1,2 +1,2 @@
 output_data_rate bluetooth_scan_time magnetic_map_interpolation magnetic_map_color server_ip server_port
-0.625 3.0 nearest ocean http://192.168.216.56 80
+2.5 0.4 nearest gnu http://192.168.216.56 80

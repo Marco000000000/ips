@@ -1,2 +1,2 @@
 output_data_rate bluetooth_scan_time magnetic_map_interpolation magnetic_map_color server_ip server_port
-80 1.5 cubic jet http://192.168.1.0 80
+80 1.3 cubic jet http://192.168.1.0 80

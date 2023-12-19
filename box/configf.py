@@ -45,12 +45,12 @@ class BoxConfig:
             reader = csv.DictReader(csv_file, delimiter=" ")
             config_data = list(reader)[0]
             
-            self.set_output_data_rate(config_data["output_data_rate"])
-            self.set_bluetooth_scan_time(config_data["bluetooth_scan_time"])
+            self.set_output_data_rate(float(config_data["output_data_rate"]))
+            self.set_bluetooth_scan_time(float(config_data["bluetooth_scan_time"]))
             self.set_magnetic_map_interpolation(config_data["magnetic_map_interpolation"])
             self.set_magnetic_map_color(config_data["magnetic_map_color"])
             self.set_server_ip(config_data["server_ip"])
-            self.set_server_port(config_data["server_port"])
+            self.set_server_port(int(config_data["server_port"]))
             
             
     def set_server_ip(self, ip):
@@ -90,8 +90,6 @@ class BoxConfig:
             self.output_data_rate = odr
         else:
             self.output_data_rate = 40
-                
-        
 
 def load_conf():
     config_file = os.getcwd() + "/static/config_box/config.txt"

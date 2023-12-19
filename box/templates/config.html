@@ -258,6 +258,7 @@
                 return response.text();
               })
               .then((data) => {
+                    console.log(data);
                     var mydata = JSON.parse(data);
                     cali.value = mydata['cali'];
                     colormap.value = mydata['colormap'];
