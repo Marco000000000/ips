@@ -1,0 +1,4 @@
+nome	CorridoioFinto
+numero	100
+wifi	0
+ble	1

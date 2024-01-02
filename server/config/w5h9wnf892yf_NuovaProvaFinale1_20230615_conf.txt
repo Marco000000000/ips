@@ -1,0 +1,4 @@
+nome	NuovaProvaFinale1
+numero	10
+wifi	1
+ble	1

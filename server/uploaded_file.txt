@@ -1,0 +1,4 @@
+nome	pppssm
+numero	1
+wifi	1
+ble	1
