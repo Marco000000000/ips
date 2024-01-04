@@ -128,11 +128,10 @@ def upum():
 
 @app.route('/update_tables')
 def update_tables():
-    print("UPDATING TABLES...")
     db = mysql.connector.connect(host='localhost', user='root', password='prova_prova')
     db_cursor = db.cursor()
 
-    token = "ucijk2rvel44_Misura02_20231122"
+    token = "77ce5c714f444016908b1ba927b2e4cc_Misura40_20240104"
     
     data_rootpath = os.getcwd()+"\\data\\"+token+"\\"
     uploads_rootpath = os.getcwd()+"\\uploads\\"+token+"\\"
@@ -154,24 +153,69 @@ def update_tables():
             point_CoordX = int(point_metadata[4])
             point_CoordY = int(point_metadata[5])
             
-            print(point_Long)
-            
             add_measure = ("INSERT INTO my_schema.measure VALUES (%s, %s)")
-            data_measure = (token, point_ID)
+            data_measure = (token, point_ID)    
             
-            print(data_measure)
-            
-            add_punto = ("INSERT INTO my_schema.point VALUES (%s, %s, %s, %s, %s)")            
-            data_punto = (point_ID, point_CoordX, point_CoordY, point_Long, point_Lat)
+            db_query = ("INSERT INTO my_schema.point VALUES (%s, %s, %s, %s, %s)")            
+            db_data = (point_ID, point_CoordX, point_CoordY, point_Long, point_Lat)
             
             db_cursor.execute(add_measure, data_measure)
-            db_cursor.execute(add_punto, data_punto)
+            db_cursor.execute(db_query, db_data)
+    
+    with open(data_magn_filepath, 'r') as file:
+        for line in file:
+            point_data = line.split('\t')
             
+            point_ID = point_data[1]
+            
+            point_magX = float(point_data[4])
+            point_magY = float(point_data[5])
+            point_magZ = float(point_data[6])
+            point_magM = float(point_data[7])
+    
+            db_query = ("INSERT INTO my_schema.magnetic_field VALUES (%s, %s, %s, %s, %s)")
+            db_data = (point_ID, point_magX, point_magY, point_magZ, point_magM)
+            
+            db_cursor.execute(db_query, db_data)
+
+    with open(data_bluetooth_filepath, 'r') as file:
+        for line in file:
+            point_data = line.split('\t')
+            
+            point_ID = point_data[1]
+            
+            point_Mac = point_data[4]
+            point_Rssi = int(point_data[5])
+    
+            db_query = ("INSERT INTO my_schema.bluetooth VALUES (%s, %s, %s)")
+            db_data = (point_ID, point_Mac, point_Rssi)
+            
+            db_cursor.execute(db_query, db_data)
+    
+    with open(data_wifi_filepath, 'r') as file:
+        for line in file:
+            point_data = line.split('\t')
+            
+            point_ID = point_data[1]
+            
+            point_SSID = point_data[4]
+            point_MAC = point_data[5]
+            point_Channel = int(point_data[6])
+            point_Frequency = point_data[7]
+            point_Quality = point_data[8]
+            point_RSSI = int(point_data[9])
+    
+            db_query = ("INSERT INTO my_schema.wifi VALUES (%s, %s, %s, %s, %s, %s, %s)")
+            db_data = (point_ID, point_SSID, point_MAC, point_Channel, point_Frequency, point_Quality, point_RSSI)
+            
+            db_cursor.execute(db_query, db_data)
+
+    
     db.commit()
     db_cursor.close()
     db.close()
         
-    return "HELLO TABLES"
+    return "Tables updated correctly"
 
 if __name__ == "__main__":
     try:
