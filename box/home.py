@@ -523,7 +523,7 @@ def misu():
         data_file = os.getcwd() + "/static/data/" + token + "/data_magn.txt"
         with open(data_file, mode='a') as f:
                 writer = csv.writer(f, delimiter='\t')
-                writer.writerow([time.time(), cx, cy, x, y, z, cm, long, lat])
+                writer.writerow([time.time(), punto, cx, cy, x, y, z, cm, long, lat])
     except:
         stato = "ko"
     
@@ -542,7 +542,7 @@ def misu():
             with open(data_file, mode='a') as f:
                 writer = csv.writer(f, delimiter='\t')
                 for i in range (len(dble)):
-                    writer.writerow([time.time(), cx, cy, dble[i][0], dble[i][1], long, lat])
+                    writer.writerow([time.time(), punto, cx, cy, dble[i][0], dble[i][1], long, lat])
         except:
             stato = "bko"
                
@@ -560,7 +560,7 @@ def misu():
             with open(data_file, mode='a') as f:
                 writer = csv.writer(f, delimiter='\t')
                 for cell in dwifi:
-                    writer.writerow([time.time(), cx, cy, cell['ssid'], cell['address'],cell['channel'],cell['frequency'],cell['quality'],cell['signal'], long, lat])
+                    writer.writerow([time.time(), punto, cx, cy, cell['ssid'], cell['address'],cell['channel'],cell['frequency'],cell['quality'],cell['signal'], long, lat])
         except:
             stato = "wko"
             

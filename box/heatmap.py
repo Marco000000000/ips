@@ -10,7 +10,7 @@ def magnmap(data, token, inter, colormap):
 
     print(token)
 
-    df = pd.DataFrame(data, columns = ['TimeStamp','X','Y','mx','my','mz','Z', 'lat', 'long'])
+    df = pd.DataFrame(data, columns = ['TimeStamp', 'idp', 'X','Y','mx','my','mz','Z', 'lat', 'long'])
     x, y, vals = df['X'].values, df['Y'].values, df['Z'].values
     
     levels = np.linspace(vals.min(), vals.max(), 6)

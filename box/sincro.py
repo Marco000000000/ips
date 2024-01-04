@@ -104,7 +104,7 @@ def upload(server, porta, t):
     #origin
     req = "/updata"
     endpoint = url+req
-    filename =  'origin.jpg'
+    filename =  'origin.png'
     file_path = rootdir + filename
     files = {'file': open(file_path, 'rb')}
     response = requests.post(endpoint, data = {'filename':filename, 'ape':t}, files=files)
@@ -134,7 +134,7 @@ def upload(server, porta, t):
         print("Response Content: ", response.content)
         arrayr.append({"misu":"ko"})
     #planimetria
-    filename = 'planimetria.jpg'
+    filename = 'planimetria.png'
     file_path = rootdir + filename
     files = {'file': open(file_path, 'rb')}
     response = requests.post(endpoint, data = {'filename':filename, 'ape':t}, files=files)
