@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, jsonify, send_file
 import socket
 import os
 import requests
+import mysql.connector
 
 app = Flask(__name__)
 
@@ -102,9 +103,10 @@ def updata():
     rootdir = os.getcwd()+"\\data\\"+ape+"\\"
     create_folder(rootdir)
     rootdir = rootdir+filename
-    print(rootdir)
+    
     file = request.files['file']
-    file.save(rootdir) 
+    file.save(rootdir)
+    
     return "File caricato con successo!"
 
 @app.route('/upum', methods=['POST'])
@@ -123,6 +125,53 @@ def upum():
     file.save(rootdir) 
 
     return "File caricato con successo!"
+
+@app.route('/update_tables')
+def update_tables():
+    print("UPDATING TABLES...")
+    db = mysql.connector.connect(host='localhost', user='root', password='prova_prova')
+    db_cursor = db.cursor()
+
+    token = "ucijk2rvel44_Misura02_20231122"
+    
+    data_rootpath = os.getcwd()+"\\data\\"+token+"\\"
+    uploads_rootpath = os.getcwd()+"\\uploads\\"+token+"\\"
+    
+    metadata_filepath = uploads_rootpath+"misu.txt"
+    
+    data_magn_filepath = data_rootpath+"data_magn.txt"
+    data_bluetooth_filepath = data_rootpath+"data_ble.txt"
+    data_wifi_filepath = data_rootpath+"data_wifi.txt"
+    
+    with open(metadata_filepath, 'r') as file:
+        file.readline()
+        for line in file:
+            point_metadata = line.split(',')
+            
+            point_ID = point_metadata[1]
+            point_Long = float(point_metadata[2])
+            point_Lat = float(point_metadata[3])
+            point_CoordX = int(point_metadata[4])
+            point_CoordY = int(point_metadata[5])
+            
+            print(point_Long)
+            
+            add_measure = ("INSERT INTO my_schema.measure VALUES (%s, %s)")
+            data_measure = (token, point_ID)
+            
+            print(data_measure)
+            
+            add_punto = ("INSERT INTO my_schema.point VALUES (%s, %s, %s, %s, %s)")            
+            data_punto = (point_ID, point_CoordX, point_CoordY, point_Long, point_Lat)
+            
+            db_cursor.execute(add_measure, data_measure)
+            db_cursor.execute(add_punto, data_punto)
+            
+    db.commit()
+    db_cursor.close()
+    db.close()
+        
+    return "HELLO TABLES"
 
 if __name__ == "__main__":
     try:
