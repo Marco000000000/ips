@@ -260,7 +260,7 @@ def download(server, porta, t, n, d):
         arrayr.append({"heatmap":"ko"})
     
     #origin
-    filename = "origin.jpg"
+    filename = "origin.png"
     response = requests.post(endpoint, data = {'filename':filename, 'ape':ape})
     if response.ok:
         print("Status Code: ", response.status_code)
@@ -295,7 +295,7 @@ def download(server, porta, t, n, d):
     req = "/dwpl"
     endpoint = url+req
     ape = t + "_" + n + "_" + d
-    filename = "planimetria.jpg"
+    filename = "planimetria.png"
     response = requests.post(endpoint, data = {'filename':filename, 'ape':ape})
 
     if response.ok:
