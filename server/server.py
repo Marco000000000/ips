@@ -3,8 +3,10 @@ import socket
 import os
 import requests
 import mysql.connector
+import json
 
 app = Flask(__name__)
+app.config.from_file("config.json", load=json.load, text=True)
 
 def create_folder(folder_path):
     if not os.path.exists(folder_path):
@@ -128,12 +130,14 @@ def upum():
 
 @app.route('/update_tables', methods=["GET"])
 def update_tables():
-    db = mysql.connector.connect(host='localhost', user='root', password='prova_prova')
+    db_host = app.config["DATABASE_HOST"]
+    db_user = app.config["DATABASE_USER"]
+    db_psw = app.config["DATABASE_PSW"]
+    
+    db = mysql.connector.connect(host=db_host, user=db_user, password=db_psw)
     db_cursor = db.cursor()
 
     token = request.args.get('ape')
-    
-    print("TOKEN IS: ", token)
     
     data_rootpath = os.getcwd()+"\\data\\"+token+"\\"
     uploads_rootpath = os.getcwd()+"\\uploads\\"+token+"\\"
@@ -160,13 +164,9 @@ def update_tables():
             point_CoordX = int(point_metadata[4])
             point_CoordY = int(point_metadata[5])
             
-            # add_measure = ("INSERT INTO my_schema.measure VALUES (%s, %s)")
-            # data_measure = (token, point_ID)    
-            
             db_query = ("INSERT INTO my_schema.point VALUES (%s, %s, %s, %s, %s, %s)")            
             db_data = (token, point_ID, point_CoordX, point_CoordY, point_Long, point_Lat)
             
-            # db_cursor.execute(add_measure, data_measure)
             db_cursor.execute(db_query, db_data)
     
     with open(data_magn_filepath, 'r') as file:
