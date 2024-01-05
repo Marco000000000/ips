@@ -138,7 +138,7 @@ def upload(server, porta, t):
     file_path = rootdir + filename
     files = {'file': open(file_path, 'rb')}
     response = requests.post(endpoint, data = {'filename':filename, 'ape':t}, files=files)
-    print(response.text)
+    
     if response.ok:
         print("Status Code: ", response.status_code)
         arrayr.append({"plani":"ok"})    
@@ -146,7 +146,19 @@ def upload(server, porta, t):
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
         arrayr.append({"plani":"ko"})
-    print(arrayr)
+    
+    # update database
+    req = "/update_tables"
+    endpoint= url+req
+    print("ENDPOINT IS: ", endpoint)
+    response = requests.get(endpoint, params={'ape':t})
+    if response.ok:
+        print("Status Code: ", response.status_code)
+        arrayr.append({"database":"ok"})    
+    else:
+        print("Status Code: ", response.status_code)
+        print("Response Content: ", response.content)
+        arrayr.append({"database":"ko"})
     
     return(arrayr)
 
