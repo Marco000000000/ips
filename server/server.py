@@ -126,12 +126,14 @@ def upum():
 
     return "File caricato con successo!"
 
-@app.route('/update_tables')
+@app.route('/update_tables', methods=["GET"])
 def update_tables():
     db = mysql.connector.connect(host='localhost', user='root', password='prova_prova')
     db_cursor = db.cursor()
 
-    token = "77ce5c714f444016908b1ba927b2e4cc_Misura40_20240104"
+    token = request.args.get('ape')
+    
+    print("TOKEN IS: ", token)
     
     data_rootpath = os.getcwd()+"\\data\\"+token+"\\"
     uploads_rootpath = os.getcwd()+"\\uploads\\"+token+"\\"
@@ -141,6 +143,11 @@ def update_tables():
     data_magn_filepath = data_rootpath+"data_magn.txt"
     data_bluetooth_filepath = data_rootpath+"data_ble.txt"
     data_wifi_filepath = data_rootpath+"data_wifi.txt"
+    
+    db_cursor.execute("DELETE FROM my_schema.point WHERE (Token=%s)", [token])
+    db_cursor.execute("DELETE FROM my_schema.magnetic_field WHERE (Token=%s)", [token])
+    db_cursor.execute("DELETE FROM my_schema.bluetooth WHERE (Token=%s)", [token])
+    db_cursor.execute("DELETE FROM my_schema.wifi WHERE (Token=%s)", [token])
     
     with open(metadata_filepath, 'r') as file:
         file.readline()
@@ -153,13 +160,13 @@ def update_tables():
             point_CoordX = int(point_metadata[4])
             point_CoordY = int(point_metadata[5])
             
-            add_measure = ("INSERT INTO my_schema.measure VALUES (%s, %s)")
-            data_measure = (token, point_ID)    
+            # add_measure = ("INSERT INTO my_schema.measure VALUES (%s, %s)")
+            # data_measure = (token, point_ID)    
             
-            db_query = ("INSERT INTO my_schema.point VALUES (%s, %s, %s, %s, %s)")            
-            db_data = (point_ID, point_CoordX, point_CoordY, point_Long, point_Lat)
+            db_query = ("INSERT INTO my_schema.point VALUES (%s, %s, %s, %s, %s, %s)")            
+            db_data = (token, point_ID, point_CoordX, point_CoordY, point_Long, point_Lat)
             
-            db_cursor.execute(add_measure, data_measure)
+            # db_cursor.execute(add_measure, data_measure)
             db_cursor.execute(db_query, db_data)
     
     with open(data_magn_filepath, 'r') as file:
@@ -173,8 +180,8 @@ def update_tables():
             point_magZ = float(point_data[6])
             point_magM = float(point_data[7])
     
-            db_query = ("INSERT INTO my_schema.magnetic_field VALUES (%s, %s, %s, %s, %s)")
-            db_data = (point_ID, point_magX, point_magY, point_magZ, point_magM)
+            db_query = ("INSERT INTO my_schema.magnetic_field VALUES (%s, %s, %s, %s, %s, %s)")
+            db_data = (token, point_ID, point_magX, point_magY, point_magZ, point_magM)
             
             db_cursor.execute(db_query, db_data)
 
@@ -187,8 +194,8 @@ def update_tables():
             point_Mac = point_data[4]
             point_Rssi = int(point_data[5])
     
-            db_query = ("INSERT INTO my_schema.bluetooth VALUES (%s, %s, %s)")
-            db_data = (point_ID, point_Mac, point_Rssi)
+            db_query = ("INSERT INTO my_schema.bluetooth VALUES (%s, %s, %s, %s)")
+            db_data = (token, point_ID, point_Mac, point_Rssi)
             
             db_cursor.execute(db_query, db_data)
     
@@ -205,8 +212,8 @@ def update_tables():
             point_Quality = point_data[8]
             point_RSSI = int(point_data[9])
     
-            db_query = ("INSERT INTO my_schema.wifi VALUES (%s, %s, %s, %s, %s, %s, %s)")
-            db_data = (point_ID, point_SSID, point_MAC, point_Channel, point_Frequency, point_Quality, point_RSSI)
+            db_query = ("INSERT INTO my_schema.wifi VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+            db_data = (token, point_ID, point_MAC, point_SSID, point_Channel, point_Frequency, point_Quality, point_RSSI)
             
             db_cursor.execute(db_query, db_data)
 
