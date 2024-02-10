@@ -797,6 +797,21 @@ def prnt():
     iip=(s.getsockname()[0])
     nssid=os.popen("sudo iwgetid -r").read()
     display.scrivi("    IPS","","Dispostivo Pronto","WiFi: "+nssid,iip+":443")
+    
+@app.route("/points")
+def points():
+	prnt()
+	return render_template('points/index.html')
+
+@app.route("/addpoints")
+def addpoints():
+	prnt()
+	return render_template('points/addpoints.html')
+    
+@app.route("/map")
+def map():
+	prnt()
+	return render_template('points/map.html')
 
 if __name__ == "__main__":
     try:
