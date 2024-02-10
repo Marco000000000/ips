@@ -74,9 +74,7 @@
         
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
-            <div style="text-align: center;">
-                <h1>Indoor Positioning System</h1>
-            </div>
+            {% include 'navbar_component.html' %}
         </header>
         <main class="px-3">
 			<div class="row" id="corpo">
@@ -290,7 +288,7 @@
 			localStorage.setItem('Markers', JSON.stringify(allMarkers));
 			localStorage.setItem('imgW',imgWidth);
 			localStorage.setItem('imgH',imgHeight);
-			window.location.href = "map.html?lat=" + lat +"&lon="+lon;
+			window.location.href = "map?lat=" + lat +"&lon="+lon;
 		})
 
 		btnelimina.addEventListener('click', ()=> {

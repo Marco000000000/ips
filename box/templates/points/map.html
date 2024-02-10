@@ -17,6 +17,15 @@
 	<script src="static/js/Leaflet.ImageOverlay.Rotated.js"></script>
 	<script src="static/js/jquery-3.3.1.js"></script>
 	<script src="static/js/perspective-transform.js" type="text/javascript"></script>
+	
+	<link rel="stylesheet" href="static/js/Leaflet.toolbar/dist/leaflet.toolbar.css" />
+	<link rel="stylesheet" href="static/js/Leaflet.DistortableImage-0.21.10/dist/leaflet.distortableimage.css" media="screen" title="no title" />
+	
+	<script src="static/js/Leaflet.toolbar/dist/leaflet.toolbar.js"></script>
+	<script src="static/js/Leaflet.DistortableImage-0.21.10/dist/leaflet.distortableimage.js"></script>
+	
+	
+	
 	<style>
 		.bd-placeholder-img {
 			font-size: 1.125rem;
@@ -76,9 +85,7 @@
 
 	<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
 		<header class="mb-auto">
-			<div style="text-align: center;">
-				<h1>Indoor Positioning System</h1>
-			</div>
+            {% include 'navbar_component.html' %}
 		</header>
 		<main class="px-3">
 			<div class="row" id="corpo">
@@ -169,7 +176,7 @@
 		{
 			// Converte la stringa JSON in un array
 			data = JSON.parse(storedArray);
-			console.log(data);
+			<!-- console.log(data); -->
 		}
 		else
 		{
@@ -190,39 +197,32 @@
 			point2 = L.latLng(lat, lon),
 			point3 = L.latLng(lat - 0.0006, lon - 0.0006);
 
-		var marker1 = L.marker(point1, { draggable: true }).addTo(map),
-			marker2 = L.marker(point2, { draggable: true }).addTo(map),
-			marker3 = L.marker(point3, { draggable: true }).addTo(map);
-
-
 		var bounds = new L.LatLngBounds(point1, point2).extend(point3);
 
 		map.fitBounds(bounds);
 
-		var overlay = L.imageOverlay.rotated(img, point1, point2, point3, {
-			opacity: 0.4,
-			interactive: true,
-			attribution: "Historical building plan &copy; <a href='http://www.ign.es'>Instituto Geográfico Nacional de España</a>"
-		});
 
-		showMarkers();
+		
+		var overlay = L.distortableImageOverlay(img, {
+			actions: [L.FreeRotateAction, L.RotateAction, L.LockAction, L.BorderAction, L.DragAction, L.ScaleAction],
+			mode: "drag",
+			selected:true,
+			opacity:0.0
+		}).addTo(map);
 
 		function repositionImage() {
-			const m1c = marker1.getLatLng();
-			const m2c = marker2.getLatLng();
-			const m3c = marker3.getLatLng();
-
-			console.log("M1", m1c, "M2", m2c);
-			overlay.reposition(m1c, m2c, m3c);
-
+			const m1c = overlay.getCorners()[0];
+			const m2c = overlay.getCorners()[1];
+			const m3c = overlay.getCorners()[2];
+			
 			const minLng = Math.min(m1c.lng, m2c.lng, m2c.lng)
 			const minLat = Math.min(m1c.lat, m2c.lat, m2c.lat)
-
+	
 			const topLeft    = [m1c.lng - minLng, m1c.lat - minLat]
 			const topRight   = [m2c.lng - minLng, m2c.lat - minLat]
 			const bottomLeft = [m3c.lng - minLng, m3c.lat - minLat]
 			const bottomRight = [topRight[0] - topLeft[0] + bottomLeft[0], topRight[1] - topLeft[1] + bottomLeft[1]]
-
+			
 			const srcCorners = [ 0,0, imageSize[0],0, 0,imageSize[1], imageSize[0],imageSize[1] ]
 			const dstCorners = topLeft.concat(topRight).concat(bottomLeft).concat(bottomRight);
 			const perspT = PerspT(srcCorners, dstCorners);
@@ -232,13 +232,16 @@
 				pointMarkers[i].setLatLng([dstPt[1] + minLat, dstPt[0] + minLng]);
 			}
 		};
-
-		marker1.on('drag dragend', repositionImage);
-		marker2.on('drag dragend', repositionImage);
-		marker3.on('drag dragend', repositionImage);
-
+		
+		overlay.on('update', repositionImage);		
+		
+		// TODO: trovare un evento che venga chiamato solo una volta, ovvero
+		// 		 solo quando 'overlay' viene aggiunto alla mappa.
+		map.on('layeradd', function() {
+			showMarkers();
+		});
+		
 		map.addLayer(overlay);
-
 
 		function setOverlayOpacity(opacity) {
 			overlay.setOpacity(opacity);
@@ -264,99 +267,24 @@
 
 		function showMarkers() {
 			if (markers_displayed) {
-				// TODO remove
-				// markers_displayed = false
 				return;
-			} 
+			}
 
 			markers_displayed = true;
 			
 			for (let j = 0; j < data.length; j++) {
 				var xreal = data[j].x_Real;
 				var yreal = data[j].y_Real;
-				var m1 = cordimark(marker1);
-				imageBounds = [[m1[0], m1[1]], quarto_punto()];
+				
+				var m1 = overlay.getCorners()[0];
+				var m4 = overlay.getCorners()[3];
+				
+				imageBounds = [[m1.lat, m1.lng], [m4.lat, m4.lng] ];
 				var newp = (convertImageCoordinatesToGPS(xreal, yreal, imageBounds));
 				
 				let marker = L.circleMarker([newp[0], newp[1]], { radius: 4, fill: true, fillOpacity: 1, stroke: false, fill: true, weight: 0, opacity: 0 }).addTo(map);
 				pointMarkers.push(marker)
 			}
-		}
-
-		/*
-		function rimuoviMarker(mappa)
-		{
-				mappa.eachLayer(function (layer) {
-				if (layer instanceof L.Marker)
-				{
-						console.log(layer);
-					mappa.removeLayer(layer);
-				}
-			});
-		}
-		*/
-
-
-		function calculateFourthPoint(lat1, lon1, lat2, lon2, lat3, lon3) {
-			const R = 6371; // Raggio approssimativo della Terra in km
-
-			// Converti le coordinate in radianti
-			const lat1Rad = toRadians(lat1);
-			const lon1Rad = toRadians(lon1);
-			const lat2Rad = toRadians(lat2);
-			const lon2Rad = toRadians(lon2);
-			const lat3Rad = toRadians(lat3);
-			const lon3Rad = toRadians(lon3);
-
-			// Calcola la distanza tra i punti 1 e 2
-			const d12 = 2 * R * Math.asin(Math.sqrt(Math.pow(Math.sin((lat2Rad - lat1Rad) / 2), 2) +
-				Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.pow(Math.sin((lon2Rad - lon1Rad) / 2), 2)));
-
-			// Calcola l'azimut del punto 2 rispetto al punto 1
-			const azimuth12 = Math.atan2(
-				Math.sin(lon2Rad - lon1Rad) * Math.cos(lat2Rad),
-				Math.cos(lat1Rad) * Math.sin(lat2Rad) - Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(lon2Rad - lon1Rad)
-			);
-
-			// Calcola le coordinate del punto 4
-			const lat4Rad = Math.asin(
-				Math.sin(lat3Rad) * Math.cos(d12 / R) +
-				Math.cos(lat3Rad) * Math.sin(d12 / R) * Math.cos(azimuth12)
-			);
-			const lon4Rad = lon3Rad + Math.atan2(
-				Math.sin(azimuth12) * Math.sin(d12 / R) * Math.cos(lat3Rad),
-				Math.cos(d12 / R) - Math.sin(lat3Rad) * Math.sin(lat4Rad)
-			);
-
-			// Converti le coordinate in gradi
-			const lat4 = toDegrees(lat4Rad);
-			const lon4 = toDegrees(lon4Rad);
-
-			return [lat4, lon4];
-		}
-
-		// Funzione di utilità per convertire da gradi a radianti
-		function toRadians(degrees) {
-			return degrees * Math.PI / 180;
-		}
-
-		// Funzione di utilità per convertire da radianti a gradi
-		function toDegrees(radians) {
-			return radians * 180 / Math.PI;
-		}
-
-		function quarto_punto() {
-			var m1 = cordimark(marker1);
-			var m2 = cordimark(marker2);
-			var m3 = cordimark(marker3);
-			const lat1 = m1[0];
-			const lon1 = m1[1];
-			const lat2 = m2[0];
-			const lon2 = m2[1];
-			const lat3 = m3[0];
-			const lon3 = m3[1];
-			const fourthPoint = calculateFourthPoint(lat1, lon1, lat2, lon2, lat3, lon3);
-			return fourthPoint;
 		}
 
 		function cordimark(marker) {
@@ -377,25 +305,6 @@
 		// getting all the markers at once
 		function getAllMarkers() {
 			showMarkers();
-			//var allMarkersObjArray = [];//new Array();
-			var allMarkersGeoJsonArray = [];//new Array();
-			
-			//allMarkersObjArray.push(pointMarkers);
-			//allMarkersGeoJsonArray.push(JSON.stringify(pointMarkers.toGeoJSON()));
-
-			/*$.each(map._layers, function (ml) {
-				//console.log(map._layers)
-				if (map._layers[ml].feature) {
-					allMarkersObjArray.push(this)
-					allMarkersGeoJsonArray.push(JSON.stringify(this.toGeoJSON()))
-				}
-			})
-			*/
-
-			//console.log(allMarkersObjArray);
-			//alert("total Markers : " + allMarkersGeoJsonArray.length + "\n\n" + allMarkersGeoJsonArray + "\n\n Also see your console for object view of this array" );
-
-			console.log(pointMarkers);
 
 			var coordi = [];//new Array();
 			var i;
@@ -403,16 +312,15 @@
 			if (pointMarkers.length > 0) {
 				for (i = 0; i < pointMarkers.length; i++) {
 					var dataa = pointMarkers[i]._latlng;
-					console.log(dataa.lat);
+					
 					var x2 = data[i].x_Pro;
 					var y2 = data[i].y_Pro;
 					var idp = data[i].idp;
 					var aa = [idp, dataa.lng, dataa.lat, x2, y2];
 					coordi.push(aa);
 				}
-				//console.log(coordi);
+				
 				exportToCsvFile(coordi, 'markers.txt');
-				//salvarif();
 			}
 			else {
 				alert("Inserisci almeno un punto all'interno della mappa");
@@ -430,15 +338,6 @@
 			linkElement.setAttribute('href', dataUri);
 			linkElement.setAttribute('download', exportFileDefaultName);
 			linkElement.click();
-		}
-
-		function salvarif() {
-			var mark = [];
-			mark.push(cordimark(marker1));
-			mark.push(cordimark(marker2));
-			mark.push(cordimark(marker3));
-			console.log(mark);
-			exportToCsvFile(mark, 'rif.txt');
 		}
 	</script>
 
