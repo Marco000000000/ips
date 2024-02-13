@@ -76,7 +76,7 @@ def setup_autorun():
                 f"Requires=network.target\n\n"
                 f"[Service]\n"
                 f"Type=idle\n"
-                f"ExecStart=/usr/bin/python3 {ETC_APP_DIRECTORY}/app.py\n"
+                f"ExecStart=/usr/bin/python3 {ETC_APP_DIRECTORY}/wifi_manager.py\n"
                 f"Restart=always\n"
                 f"RestartSec=10\n"
                 f"User=root\n\n"
