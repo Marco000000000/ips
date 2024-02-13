@@ -1,10 +1,11 @@
 import os
 import shutil
 import subprocess
+import sys
 
 # Constants
-HOTSPOT_NAME = "IPS"
-HOTSPOT_PASSWORD = "password"
+DEFAULT_HOTSPOT_NAME = "IPS"
+DEFAULT_HOTSPOT_PASSWORD = "password"
 SERVICE_NAME = "hotspot.service"
 APP_DIRECTORY = "config_wifi_page"
 ETC_APP_DIRECTORY = "/etc/config_wifi_page"
@@ -35,22 +36,22 @@ def install_requirements():
         exit(1)
 
 
-def setup_hotspot():
+def setup_hotspot(hotspot_name, hotspot_password):
     """Create the Wi-Fi hotspot and modify the connection to autoconnect."""
     create_hotspot = subprocess.run(
-        ['nmcli', 'device', 'wifi', 'hotspot', 'ssid', HOTSPOT_NAME, 'con-name', HOTSPOT_NAME, 'password',
-         HOTSPOT_PASSWORD, 'ifname', 'wlan0'], capture_output=True, text=True)
+        ['nmcli', 'device', 'wifi', 'hotspot', 'ssid', hotspot_name, 'con-name', hotspot_name, 'password',
+         hotspot_password, 'ifname', 'wlan0'], capture_output=True, text=True)
     if create_hotspot.returncode != 0:
         print("Error creating hotspot:", create_hotspot.stderr)
         exit(1)
 
-    modify_connection = subprocess.run(['nmcli', 'connection', 'modify', HOTSPOT_NAME, 'connection.autoconnect', 'yes'],
+    modify_connection = subprocess.run(['nmcli', 'connection', 'modify', hotspot_name, 'connection.autoconnect', 'yes'],
                                        capture_output=True, text=True)
     if modify_connection.returncode != 0:
         print("Error modifying connection:", modify_connection.stderr)
         exit(1)
 
-    print(f"Hotspot \"{HOTSPOT_NAME}\" created successfully")
+    print(f"Hotspot \"{hotspot_name}\" created successfully")
 
 
 def setup_autorun():
@@ -101,13 +102,13 @@ def setup_autorun():
     print(f"Setup service \"{SERVICE_NAME}\" completed successfully!")
 
 
-def setup():
+def setup(hotspot_name=DEFAULT_HOTSPOT_NAME, hotspot_password=DEFAULT_HOTSPOT_PASSWORD):
     """Main setup function."""
     try:
         check_root()
         check_nmcli()
         install_requirements()
-        setup_hotspot()
+        setup_hotspot(hotspot_name, hotspot_password)
         setup_autorun()
         print("Setup completed successfully!")
     except Exception as e:
@@ -116,4 +117,10 @@ def setup():
 
 
 if __name__ == '__main__':
-    setup()
+    if len(sys.argv) == 3:
+        setup(sys.argv[1], sys.argv[2])
+    elif len(sys.argv) == 1:
+        setup()
+    else:
+        print("Usage: python script.py [hotspot_name hotspot_password]")
+        exit(1)
