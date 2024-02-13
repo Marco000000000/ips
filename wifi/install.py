@@ -43,12 +43,17 @@ def install_requirements():
 
 def setup_virtualenv():
     """Setup virtual environment inside ETC_APP_DIRECTORY."""
-    venv_path = os.path.join(ETC_APP_DIRECTORY, '.venv')
-    if not os.path.exists(venv_path):
-        subprocess.run(['python3', '-m', 'venv', venv_path], check=True)
-        print(f"Virtual environment created successfully at {venv_path}")
+    # Copy the application folder to /etc
+    full_app_dir = os.path.join(os.path.dirname(__file__), APP_DIRECTORY)
+    if not os.path.exists(ETC_APP_DIRECTORY):
+        shutil.copytree(full_app_dir, ETC_APP_DIRECTORY)
+        print("Application folder copied to /etc")
     else:
-        print("Virtual environment already exists.")
+        print("Application folder already exists in /etc")
+
+    venv_path = os.path.join(ETC_APP_DIRECTORY, '.venv')
+    subprocess.run(['python3', '-m', 'venv', venv_path], check=True)
+    print(f"Virtual environment created successfully at {venv_path}")
 
 
 def setup_hotspot(hotspot_name, hotspot_password):
@@ -71,13 +76,6 @@ def setup_hotspot(hotspot_name, hotspot_password):
 
 def setup_autorun():
     """Setup autorun for the Wi-Fi configuration page."""
-    # Copy the application folder to /etc
-    full_app_dir = os.path.join(os.path.dirname(__file__), APP_DIRECTORY)
-    if not os.path.exists(ETC_APP_DIRECTORY):
-        shutil.copytree(full_app_dir, ETC_APP_DIRECTORY)
-        print("Application folder copied to /etc")
-    else:
-        print("Application folder already exists in /etc")
 
     service_file = f"/etc/systemd/system/{SERVICE_NAME}"
 
