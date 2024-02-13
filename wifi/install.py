@@ -29,11 +29,26 @@ def check_nmcli():
 def install_requirements():
     """Install Python dependencies from requirements.txt."""
     requirements_path = os.path.join(os.path.dirname(__file__), REQUIREMENTS_FILE)
+    venv_path = os.path.join(ETC_APP_DIRECTORY, '.venv')
     if os.path.exists(requirements_path):
-        subprocess.run(['pip', 'install', '-r', requirements_path], check=True)
+        if os.path.exists(venv_path):
+            subprocess.run([os.path.join(venv_path, 'bin', 'pip'), 'install', '-r', requirements_path], check=True)
+        else:
+            print(f"Virtual environment not found at {venv_path}. Please run setup_virtualenv() first.")
+            exit(1)
     else:
         print(f"Requirements file '{REQUIREMENTS_FILE}' not found.")
         exit(1)
+
+
+def setup_virtualenv():
+    """Setup virtual environment inside ETC_APP_DIRECTORY."""
+    venv_path = os.path.join(ETC_APP_DIRECTORY, '.venv')
+    if not os.path.exists(venv_path):
+        subprocess.run(['python3', '-m', 'venv', venv_path], check=True)
+        print(f"Virtual environment created successfully at {venv_path}")
+    else:
+        print("Virtual environment already exists.")
 
 
 def setup_hotspot(hotspot_name, hotspot_password):
@@ -76,7 +91,7 @@ def setup_autorun():
                 f"Requires=network.target\n\n"
                 f"[Service]\n"
                 f"Type=idle\n"
-                f"ExecStart=/usr/bin/python3 {ETC_APP_DIRECTORY}/wifi_manager.py\n"
+                f"ExecStart={ETC_APP_DIRECTORY}/.venv/bin/python {ETC_APP_DIRECTORY}/wifi_manager.py\n"
                 f"Restart=always\n"
                 f"RestartSec=10\n"
                 f"User=root\n\n"
@@ -107,6 +122,7 @@ def setup(hotspot_name=DEFAULT_HOTSPOT_NAME, hotspot_password=DEFAULT_HOTSPOT_PA
     try:
         check_root()
         check_nmcli()
+        setup_virtualenv()
         install_requirements()
         setup_hotspot(hotspot_name, hotspot_password)
         setup_autorun()
