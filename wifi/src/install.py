@@ -4,12 +4,12 @@ import subprocess
 import sys
 
 # Constants
-DEFAULT_HOTSPOT_NAME = "IPS"
+DEFAULT_HOTSPOT_NAME = "RaspHotspot"
 DEFAULT_HOTSPOT_PASSWORD = "password"
 SERVICE_NAME = "hotspot.service"
 APP_DIRECTORY = "config_wifi_page"
 ETC_APP_DIRECTORY = "/etc/config_wifi_page"
-REQUIREMENTS_FILE = "requirements.txt"
+REQUIREMENTS_FILE = "../requirements.txt"
 
 
 def check_root():

@@ -1,32 +1,35 @@
-# Wi-Fi Configuration Page
+# RaspberryPi Hotspot and Wi-Fi Manager
 
-This project provides a simple web-based interface for configuring and managing Wi-Fi connections on a device. It consists of a Flask web application and supporting scripts to facilitate the setup and management of Wi-Fi networks.
-
-## Project Structure
-
-- `config_wifi_page/`: Directory containing the main application files.
-    - `wifi_manager.py`: Flask web application for managing Wi-Fi connections.
-- `install.py`: Installation script for setting up the Wi-Fi configuration page and associated services.
-- `uninstall.py`: Uninstallation script for removing the Wi-Fi configuration page and associated services.
-- `requirements.txt`: List of Python dependencies required for running the application.
+The RaspberryPi Hotspot and Wi-Fi Manager project offers a simple solution for configuring Wi-Fi connections on a
+Raspberry Pi. It creates a hotspot to interface with the Raspberry Pi and includes a Flask-based web application (
+wifi_manager.py) that interacts with NetworkManager (nmcli) to manage Wi-Fi connections.
 
 ## Installation
 
-1. Clone the repository to your local machine.
+To set up the project on your Raspberry Pi, follow these steps:
+
+1. Clone or download the project repository to your Raspberry Pi.
 2. Navigate to the project directory.
-3. Run the installation script using Python:
+3. Run the installation script using Python. You can specify the hotspot name and password during installation. If no
+   arguments are provided, default values will be used (SSID: RaspHotspot, PASS: password).
 
     ```bash
-    sudo python install.py
+    sudo python3 -B src/install.py [hotspot_name hotspot_password]
     ```
 
 4. Follow the prompts to set up the Wi-Fi hotspot and configure the auto-run service.
 
 ## Usage
 
-1. After installation, access the Wi-Fi configuration page by navigating to the device's IP address in a web browser.
-2. The web interface allows you to scan for available Wi-Fi networks, select a network, and enter the password to connect.
-3. Once connected, the device should be able to access the internet using the configured Wi-Fi network.
+Here's how to use the Wi-Fi configuration page:
+
+1. Connect to the hotspot broadcasted from the Raspberry Pi.
+2. Open a web browser and navigate to the Raspberry Pi's IP address (typically 10.42.0.1).
+3. The web interface will scan for available Wi-Fi networks and display them. Select your desired network from the list.
+4. Enter the password for the selected Wi-Fi network.
+5. Once connected, the Raspberry Pi should have internet access through the configured Wi-Fi network.
+6. If the Wi-Fi connection is lost, the Raspberry Pi will automatically broadcast its hotspot again, allowing for
+   reconfiguration.
 
 ## Uninstallation
 
@@ -35,7 +38,9 @@ To remove the Wi-Fi configuration page and associated services:
 1. Run the uninstallation script:
 
     ```bash
-    sudo python uninstall.py
+    sudo python -B src/uninstall.py
     ```
 
-2. Follow the prompts to stop and disable the hotspot service, remove the service file, delete the application folder, and remove the created Wi-Fi hotspot.
+This will remove all configurations and settings made during installation.
+
+Feel free to reach out if you encounter any issues or have any questions!
