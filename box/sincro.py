@@ -1,7 +1,7 @@
-import requests
-import pandas as pd
 import os
-from json import loads, dumps
+
+import requests
+
 
 def create_folder(folder_path):
     if not os.path.exists(folder_path):
@@ -12,18 +12,18 @@ def create_folder(folder_path):
 
 
 def upload(server, porta, t):
-    print("connesione al server:",server," : ",porta)
+    print("connesione al server:", server, " : ", porta)
     arrayr = []
-    url = server+":"+ str(porta)
+    url = server + ":" + str(porta)
 
-    #conf
+    # conf
     req = "/upconf"
-    endpoint = url+req
-    rootdir = os.getcwd()+'/static/config/'
-    filename= t + '_conf.txt'
+    endpoint = url + req
+    rootdir = os.getcwd() + '/static/config/'
+    filename = t + '_conf.txt'
     file_path = rootdir + filename
     files = {'file': open(file_path, 'rb')}
-    response = requests.post(endpoint, data = {'filename':filename}, files=files)
+    response = requests.post(endpoint, data={'filename': filename}, files=files)
     print(response.text)
     if response.ok:
         print("Status Code: ", response.status_code)
@@ -35,152 +35,152 @@ def upload(server, porta, t):
                   conf_read[3].split('\t')[0]: (conf_read[3].split('\t')[1]).split('\n')[0]}
         ble_s = int(config['ble'])
         wifi_s = int(config['wifi'])
-        arrayr.append({"config":"ok"})
+        arrayr.append({"config": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"config":"ko"})
-        
-    #data
+        arrayr.append({"config": "ko"})
+
+    # data
     req = "/updata"
-    endpoint = url+req
-    rootdir = os.getcwd()+'/static/data/'+t+'/'
-    #data_magn
+    endpoint = url + req
+    rootdir = os.getcwd() + '/static/data/' + t + '/'
+    # data_magn
     filename = 'data_magn.txt'
     file_path = rootdir + filename
     files = {'file': open(file_path, 'rb')}
-    response = requests.post(endpoint, data = {'filename':filename, 'ape':t}, files=files)
+    response = requests.post(endpoint, data={'filename': filename, 'ape': t}, files=files)
     print(response.text)
     if response.ok:
         print("Status Code: ", response.status_code)
-        arrayr.append({"data_magn":"ok"})    
+        arrayr.append({"data_magn": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"data_magn":"ko"})
-    #data_wifi.txt
+        arrayr.append({"data_magn": "ko"})
+    # data_wifi.txt
     if wifi_s == 1:
-        filename =  "data_wifi.txt"
+        filename = "data_wifi.txt"
         file_path = rootdir + filename
         files = {'file': open(file_path, 'rb')}
-        response = requests.post(endpoint, data = {'filename':filename, 'ape':t}, files=files)
-        print(response.text)    
+        response = requests.post(endpoint, data={'filename': filename, 'ape': t}, files=files)
+        print(response.text)
         if response.ok:
             print("Status Code: ", response.status_code)
-            arrayr.append({"data_wifi":"ok"})
+            arrayr.append({"data_wifi": "ok"})
         else:
             print("Status Code: ", response.status_code)
             print("Response Content: ", response.content)
-            arrayr.append({"data_wifi":"ko"})
-    #data_ble.txt
+            arrayr.append({"data_wifi": "ko"})
+    # data_ble.txt
     if ble_s == 1:
-        filename =  "data_ble.txt"
+        filename = "data_ble.txt"
         file_path = rootdir + filename
         files = {'file': open(file_path, 'rb')}
-        response = requests.post(endpoint, data = {'filename':filename, 'ape':t}, files=files)
-        print(response.text)    
+        response = requests.post(endpoint, data={'filename': filename, 'ape': t}, files=files)
+        print(response.text)
         if response.ok:
             print("Status Code: ", response.status_code)
-            arrayr.append({"data_ble":"ok"})
+            arrayr.append({"data_ble": "ok"})
         else:
             print("Status Code: ", response.status_code)
             print("Response Content: ", response.content)
-            arrayr.append({"data_ble":"ko"})
-    #hm
+            arrayr.append({"data_ble": "ko"})
+    # hm
     req = "/updata"
-    endpoint = url+req
-    filename =  'hm.png'
+    endpoint = url + req
+    filename = 'hm.png'
     file_path = rootdir + filename
     files = {'file': open(file_path, 'rb')}
-    response = requests.post(endpoint, data = {'filename':filename, 'ape':t}, files=files)
-    print(response.text)    
+    response = requests.post(endpoint, data={'filename': filename, 'ape': t}, files=files)
+    print(response.text)
     if response.ok:
         print("Status Code: ", response.status_code)
-        arrayr.append({"hm":"ok"})
+        arrayr.append({"hm": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"hm":"ko"})
-    #origin
+        arrayr.append({"hm": "ko"})
+    # origin
     req = "/updata"
-    endpoint = url+req
-    filename =  'origin.png'
+    endpoint = url + req
+    filename = 'origin.png'
     file_path = rootdir + filename
     files = {'file': open(file_path, 'rb')}
-    response = requests.post(endpoint, data = {'filename':filename, 'ape':t}, files=files)
-    print(response.text)    
+    response = requests.post(endpoint, data={'filename': filename, 'ape': t}, files=files)
+    print(response.text)
     if response.ok:
         print("Status Code: ", response.status_code)
-        arrayr.append({"origin":"ok"})
+        arrayr.append({"origin": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"origin":"ko"})
-    #uploads
+        arrayr.append({"origin": "ko"})
+    # uploads
     req = "/upum"
-    endpoint = url+req
-    rootdir = os.getcwd()+'/static/uploads/'+t+'/'
-    #data_magn
+    endpoint = url + req
+    rootdir = os.getcwd() + '/static/uploads/' + t + '/'
+    # data_magn
     filename = 'misu.txt'
     file_path = rootdir + filename
     files = {'file': open(file_path, 'rb')}
-    response = requests.post(endpoint, data = {'filename':filename, 'ape':t}, files=files)
+    response = requests.post(endpoint, data={'filename': filename, 'ape': t}, files=files)
     print(response.text)
     if response.ok:
         print("Status Code: ", response.status_code)
-        arrayr.append({"misu":"ok"})    
+        arrayr.append({"misu": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"misu":"ko"})
-    #planimetria
+        arrayr.append({"misu": "ko"})
+    # planimetria
     filename = 'planimetria.png'
     file_path = rootdir + filename
     files = {'file': open(file_path, 'rb')}
-    response = requests.post(endpoint, data = {'filename':filename, 'ape':t}, files=files)
-    
+    response = requests.post(endpoint, data={'filename': filename, 'ape': t}, files=files)
+
     if response.ok:
         print("Status Code: ", response.status_code)
-        arrayr.append({"plani":"ok"})    
+        arrayr.append({"plani": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"plani":"ko"})
-    
+        arrayr.append({"plani": "ko"})
+
     # update database
     req = "/update_tables"
-    endpoint= url+req
+    endpoint = url + req
     print("ENDPOINT IS: ", endpoint)
-    response = requests.get(endpoint, params={'ape':t})
+    response = requests.get(endpoint, params={'ape': t})
     if response.ok:
         print("Status Code: ", response.status_code)
-        arrayr.append({"database":"ok"})    
+        arrayr.append({"database": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"database":"ko"})
-    
-    return(arrayr)
+        arrayr.append({"database": "ko"})
+
+    return (arrayr)
 
 
 def download(server, porta, t, n, d):
-    print("connesione al server:",server," : ",porta)
+    print("connesione al server:", server, " : ", porta)
     arrayr = []
-    
-    url = server+":"+ str(porta)
-    
-    #confing
+
+    url = server + ":" + str(porta)
+
+    # confing
     print("download file config")
     req = "/dwc"
-    endpoint = url+req
+    endpoint = url + req
     filename = t + "_" + n + "_" + d + "_conf.txt"
-    rootdir = os.getcwd()+'/static/config/'
-    response = requests.post(endpoint, data = {'filename':filename})
+    rootdir = os.getcwd() + '/static/config/'
+    response = requests.post(endpoint, data={'filename': filename})
     if response.ok:
         print("Status Code: ", response.status_code)
-        with open(rootdir+filename, "w") as f:
+        with open(rootdir + filename, "w") as f:
             f.write(response.text)
-        
+
         conf_file = os.getcwd() + "/static/config/" + filename
         conf_read = open(conf_file, "r").readlines()
         config = {conf_read[0].split('\t')[0]: (conf_read[0].split('\t')[1]).split('\n')[0],
@@ -189,127 +189,127 @@ def download(server, porta, t, n, d):
                   conf_read[3].split('\t')[0]: (conf_read[3].split('\t')[1]).split('\n')[0]}
         ble_s = int(config['ble'])
         wifi_s = int(config['wifi'])
-        arrayr.append({"config":"ok"})
+        arrayr.append({"config": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"config":"ko"})
-    
-    #data
-    name_folder=os.getcwd() + "/static/data/" + t + "_" + n + "_" + d + "/"
+        arrayr.append({"config": "ko"})
+
+    # data
+    name_folder = os.getcwd() + "/static/data/" + t + "_" + n + "_" + d + "/"
     create_folder(name_folder)
-    
-    #data_magn.txt
+
+    # data_magn.txt
     req = "/dwdm"
-    endpoint = url+req
+    endpoint = url + req
     ape = t + "_" + n + "_" + d
-    filename =  "data_magn.txt"
-    response = requests.post(endpoint, data = {'filename':filename, 'ape':ape})
+    filename = "data_magn.txt"
+    response = requests.post(endpoint, data={'filename': filename, 'ape': ape})
     if response.ok:
         print("Status Code: ", response.status_code)
-        with open(name_folder+filename, "w") as f:
+        with open(name_folder + filename, "w") as f:
             f.write(response.text)
-        arrayr.append({"data_magn":"ok"})
+        arrayr.append({"data_magn": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"data_magn":"ko"})
-    
-    #data_wifi.txt
+        arrayr.append({"data_magn": "ko"})
+
+    # data_wifi.txt
     if wifi_s == 1:
-        filename =  "data_wifi.txt"
-        response = requests.post(endpoint, data = {'filename':filename, 'ape':ape})
+        filename = "data_wifi.txt"
+        response = requests.post(endpoint, data={'filename': filename, 'ape': ape})
         if response.ok:
             print("Status Code: ", response.status_code)
-            with open(name_folder+filename, "w") as f:
+            with open(name_folder + filename, "w") as f:
                 f.write(response.text)
-            arrayr.append({"data_wifi":"ok"})
+            arrayr.append({"data_wifi": "ok"})
         else:
             print("Status Code: ", response.status_code)
             print("Response Content: ", response.content)
-            arrayr.append({"data_wifi":"ko"})
-        
-    #data_ble.txt
+            arrayr.append({"data_wifi": "ko"})
+
+    # data_ble.txt
     if ble_s == 1:
-        filename =  "data_ble.txt"
-        response = requests.post(endpoint, data = {'filename':filename, 'ape':ape})
+        filename = "data_ble.txt"
+        response = requests.post(endpoint, data={'filename': filename, 'ape': ape})
         if response.ok:
             print("Status Code: ", response.status_code)
-            with open(name_folder+filename, "w") as f:
+            with open(name_folder + filename, "w") as f:
                 f.write(response.text)
-            arrayr.append({"data_ble":"ok"})
+            arrayr.append({"data_ble": "ok"})
         else:
             print("Status Code: ", response.status_code)
             print("Response Content: ", response.content)
-            arrayr.append({"data_ble":"ko"})
+            arrayr.append({"data_ble": "ko"})
 
-    #hm
+    # hm
     req = "/dwhm"
-    endpoint = url+req
+    endpoint = url + req
     ape = t + "_" + n + "_" + d
-    filename =  "hm.png"
-    response = requests.post(endpoint, data = {'filename':filename, 'ape':ape})
+    filename = "hm.png"
+    response = requests.post(endpoint, data={'filename': filename, 'ape': ape})
     if response.ok:
         print("Status Code: ", response.status_code)
-        with open(name_folder+filename, "wb") as f:
+        with open(name_folder + filename, "wb") as f:
             f.write(response.content)
-        arrayr.append({"heatmap":"ok"})
+        arrayr.append({"heatmap": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"heatmap":"ko"})
-    
-    #origin
-    filename = "origin.png"
-    response = requests.post(endpoint, data = {'filename':filename, 'ape':ape})
-    if response.ok:
-        print("Status Code: ", response.status_code)
-        with open(name_folder+filename, "wb") as f:
-            f.write(response.content)
-        arrayr.append({"origin":"ok"})
-    else:
-        print("Status Code: ", response.status_code)
-        print("Response Content: ", response.content)
-        arrayr.append({"origin":"ko"})
-    
-    #uploads
-    name_folder=os.getcwd() + "/static/uploads/" + t + "_" + n + "_" + d + "/"
-    create_folder(name_folder)
-    #misu.txt
-    req = "/dwum"
-    endpoint = url+req
-    ape = t + "_" + n + "_" + d
-    filename =  "misu.txt"
-    response = requests.post(endpoint, data = {'filename':filename, 'ape':ape})
-    if response.ok:
-        print("Status Code: ", response.status_code)
-        with open(name_folder+filename, "w") as f:
-            f.write(response.text)
-        arrayr.append({"misu":"ok"})
-    else:
-        print("Status Code: ", response.status_code)
-        print("Response Content: ", response.content)
-        arrayr.append({"misu":"ko"})
+        arrayr.append({"heatmap": "ko"})
 
-    #planimetria
+    # origin
+    filename = "origin.png"
+    response = requests.post(endpoint, data={'filename': filename, 'ape': ape})
+    if response.ok:
+        print("Status Code: ", response.status_code)
+        with open(name_folder + filename, "wb") as f:
+            f.write(response.content)
+        arrayr.append({"origin": "ok"})
+    else:
+        print("Status Code: ", response.status_code)
+        print("Response Content: ", response.content)
+        arrayr.append({"origin": "ko"})
+
+    # uploads
+    name_folder = os.getcwd() + "/static/uploads/" + t + "_" + n + "_" + d + "/"
+    create_folder(name_folder)
+    # misu.txt
+    req = "/dwum"
+    endpoint = url + req
+    ape = t + "_" + n + "_" + d
+    filename = "misu.txt"
+    response = requests.post(endpoint, data={'filename': filename, 'ape': ape})
+    if response.ok:
+        print("Status Code: ", response.status_code)
+        with open(name_folder + filename, "w") as f:
+            f.write(response.text)
+        arrayr.append({"misu": "ok"})
+    else:
+        print("Status Code: ", response.status_code)
+        print("Response Content: ", response.content)
+        arrayr.append({"misu": "ko"})
+
+    # planimetria
     req = "/dwpl"
-    endpoint = url+req
+    endpoint = url + req
     ape = t + "_" + n + "_" + d
     filename = "planimetria.png"
-    response = requests.post(endpoint, data = {'filename':filename, 'ape':ape})
+    response = requests.post(endpoint, data={'filename': filename, 'ape': ape})
 
     if response.ok:
         print("Status Code: ", response.status_code)
-        with open(name_folder+filename, "wb") as f:
+        with open(name_folder + filename, "wb") as f:
             f.write(response.content)
-        arrayr.append({"plani":"ok"})
+        arrayr.append({"plani": "ok"})
     else:
         print("Status Code: ", response.status_code)
         print("Response Content: ", response.content)
-        arrayr.append({"plani":"ko"})
-        
+        arrayr.append({"plani": "ko"})
+
     print(arrayr)
-    #parsed = loads(arrayr)
-    #vett = dumps(parsed, indent=4)
-    #print(vett)
+    # parsed = loads(arrayr)
+    # vett = dumps(parsed, indent=4)
+    # print(vett)
     return arrayr

@@ -1,10 +1,8 @@
-import RPi.GPIO as GPIO
-import calendar
 import time
-import os
-import display
+
 import led
 
+import display
 
 if __name__ == "__main__":
     led.rosso('ON')
@@ -15,5 +13,4 @@ if __name__ == "__main__":
     led.giallo('OFF')
     led.verde('OFF')
     while True:
-        display.scrivi("    IPS","","http://10.0.0.1","","")
-    
+        display.scrivi("    IPS", "", "http://10.0.0.1", "", "")
