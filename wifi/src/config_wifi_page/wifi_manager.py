@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 from flask import Flask, request
@@ -78,6 +79,7 @@ def submit():
     password = request.form.get('password')
     if ssid:
         result_message = connect_to_wifi(ssid, password)
+        os.system('sudo reboot')
         return f"<p>{result_message}</p>"
     else:
         return "<p>Error: Please select a Wi-Fi network.</p>"
