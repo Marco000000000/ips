@@ -7,7 +7,6 @@ sudo raspi-config nonint do_spi 0
 sudo systemctl enable pigpiod
 
 # Set up Python virtual environment and run setup.py
-cd src || exit
 python3 -m venv .venv
 source .venv/bin/activate
 .venv/bin/python3 setup.py
@@ -23,14 +22,14 @@ Requires=network.target
 [Service]
 Type=idle
 ExecStartPre=/bin/sleep 3
-ExecStart=/usr/bin/sudo .venv/bin/python3 home.py
+ExecStart=/usr/bin/sudo ../.venv/bin/python3 home.py
 Restart=always
 RestartSec=10
-WorkingDirectory=%s
+WorkingDirectory=%s/src
 
 [Install]
 WantedBy=multi-user.target
-" "$pathLocale" "$pathLocale" > /etc/systemd/system/myService.service
+" "$pathLocale"  > /etc/systemd/system/myService.service
 chmod 644 /etc/systemd/system/myService.service
 systemctl daemon-reload
 systemctl enable myService.service
