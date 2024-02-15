@@ -27,10 +27,10 @@
     "maps"
   ],
   "directories": {
-    "examples": "./examples",
-    "distribution": "./dist",
-    "source": "./src",
-    "tests": "./test"
+    "examples": "examples",
+    "distribution": "dist",
+    "source": "src",
+    "tests": "test"
   },
   "author": "Anish Shah, Jeff Warren, Justin Manley, Sasha Boginsky, Pranshu Srivastava",
   "license": "MIT",

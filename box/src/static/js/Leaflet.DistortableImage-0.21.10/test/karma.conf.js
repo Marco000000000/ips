@@ -1,7 +1,7 @@
 module.exports = function(config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '../',
+    basePath: '..',
 
     plugins: [
       require('karma-babel-preprocessor'),
@@ -24,7 +24,7 @@ module.exports = function(config) {
       'node_modules/glfx/glfx.js',
       'node_modules/chai/chai.js',
       'src/util/*.js',
-      'src/DistortableImageOverlay.js',
+      '../src/DistortableImageOverlay.js',
       'src/DistortableCollection.js',
       'src/edit/getEXIFdata.js',
       'src/mapmixins/DoubleClickZoom.js',
