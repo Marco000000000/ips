@@ -10,7 +10,7 @@ import requests
 
 import display
 
-o_filename = 'mag.txt'
+o_filename = 'config/mag.txt'
 
 
 def req(lat, long):
@@ -95,22 +95,22 @@ def calibrate(nume):
     print(rawData)
     print(type(rawData))
     print(rawData.size)
-    with open('ti.txt', mode='r') as f:
+    with open('config/ti.txt', mode='r') as f:
         ti = float(f.read())
     f.close()
     print(ti)
     func = ctypes.CDLL(os.getcwd() + '/fun.so')
     print(type(func))
     print(func.main(ctypes.c_float(ti)))
-    A = np.genfromtxt('matrix.txt', delimiter='\t')
-    b = np.genfromtxt('bias.txt', delimiter='\t')
+    A = np.genfromtxt('config/matrix.txt', delimiter='\t')
+    b = np.genfromtxt('config/bias.txt', delimiter='\t')
     N = len(rawData)
     calibData = np.zeros((N, 3), dtype='float')
     for i in range(N):
         currMeas = np.array([rawData[i, 0], rawData[i, 1], rawData[i, 2]])
         calibData[i, :] = A @ (currMeas - b)
 
-    with open("cod.txt", mode='w') as f:
+    with open("config/cod.txt", mode='w') as f:
         f.write(str('33'))
     f.close()
 

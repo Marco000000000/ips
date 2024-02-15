@@ -56,7 +56,7 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # app = Flask(__name__)
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['SSL_CONTEXT'] = ('cert.pem', 'priv_key.pem')
+app.config['SSL_CONTEXT'] = ('config/cert.pem', 'config/priv_key.pem')
 sslify = SSLify(app)
 
 # Calibrazione
@@ -67,8 +67,8 @@ app.secret_key = randStr(chars='abcdefghijklmnopqrstuvwyxz123456789')
 
 g_stop_calibration_requested = None
 
-calibration_raw_data_output_filename = "mag.txt"
-calibration_calibrated_data_output_filename = "calibration_calibrated_data.txt"
+calibration_raw_data_output_filename = "config/mag.txt"
+calibration_calibrated_data_output_filename = "config/calibration_calibrated_data.txt"
 
 
 @app.route("/")
@@ -213,7 +213,7 @@ def nuova_calibrazione_thread_func(total_intensity, sample_frequency):
     # N è il numero di campioni letti durante l'acquisizione
     N = len(raw_data)
 
-    # Scrivi raw_data dentro il file 'mag.txt'. Verrà usato per il calcolo della matrice A e del bias.
+    # Scrivi raw_data dentro il file 'config/mag.txt'. Verrà usato per il calcolo della matrice A e del bias.
     with open(calibration_raw_data_output_filename, mode='w') as f:
         writer = csv.writer(f, delimiter='\t')
         for i in range(N):
@@ -221,15 +221,15 @@ def nuova_calibrazione_thread_func(total_intensity, sample_frequency):
 
     # Invoca la funzione 'main' dentro la libreria fun.so per il calcolo di A e b, passandogli
     # la total intensity acquisita precedentemnte dal client.
-    # Inoltre, la funzione leggerà il file mag.txt contenente le misure contenute in raw_data.
+    # Inoltre, la funzione leggerà il file config/mag.txt contenente le misure contenute in raw_data.
     # Con queste informazioni, la funzione 'main' calcolerà A e b e le scriverà, rispettivamente,
-    # nei file 'matrix.txt' e 'bias.txt'.
+    # nei file 'config/matrix.txt' e 'config/bias.txt'.
     func = ctypes.CDLL(os.getcwd() + '/fun.so')
     func.main(ctypes.c_float(total_intensity))
 
     # Leggi A e b dai rispettivi file
-    A = np.genfromtxt('matrix.txt', delimiter='\t')
-    b = np.genfromtxt('bias.txt', delimiter='\t')
+    A = np.genfromtxt('config/matrix.txt', delimiter='\t')
+    b = np.genfromtxt('config/bias.txt', delimiter='\t')
 
     # Dopo aver acquisito i dati grezzi in 'raw_data', usa A e b per calibrare
     calibrated_data = np.zeros((N, 3), dtype='float')
@@ -348,24 +348,24 @@ def calibra():
         ti = float(datare['ti'])
         # if(k=='b'):
         if (cod == 0):
-            with open('cod.txt', mode='r') as f:
+            with open('config/cod.txt', mode='r') as f:
                 codn = int(f.read())
             f.close()
             if codn != 0:
                 print("Calibrazione già in corso")
                 return jsonify({"codi": -22, "mess": "Calibrazione già in corso"})
             if (ti != -9):
-                with open("ti.txt", mode='w') as f:
+                with open("config/ti.txt", mode='w') as f:
                     f.write(str(ti))
                 f.close()
-            with open("cod.txt", mode='w') as f:
+            with open("config/cod.txt", mode='w') as f:
                 f.write(str('1'))
             f.close()
             x = threading.Thread(target=ta, args=(nume,))
             x.start()
             return jsonify({"codi": 1})
         elif (cod == 33):
-            with open("cod.txt", mode='w') as f:
+            with open("config/cod.txt", mode='w') as f:
                 f.write(str('0'))
             f.close()
             current_GMT = time.gmtime()
@@ -375,7 +375,7 @@ def calibra():
             finalresponse = {"codi": -14, "s": nf, "statuscalibration": "ok"}
             return jsonify(finalresponse)
         elif (cod == -11):
-            with open("cod.txt", mode='w') as f:
+            with open("config/cod.txt", mode='w') as f:
                 f.write(str('0'))
             f.close()
             try:
@@ -384,7 +384,7 @@ def calibra():
                 print("Thread non trovato!")
             return jsonify({"codi": 0})
         else:
-            with open('cod.txt', mode='r') as f:
+            with open('config/cod.txt', mode='r') as f:
                 codn = int(f.read())
             f.close()
             return jsonify({"codi": codn})
@@ -395,7 +395,7 @@ def ta(nume):
     print(rawData)
     # if asse == 'X':
     rawData = np.append(rawData, cal.asse(nume, '1', sensor), axis=0)
-    with open('cod.txt', mode='r') as f:
+    with open('config/cod.txt', mode='r') as f:
         codn = int(f.read())
     f.close()
     print(codn)
@@ -404,15 +404,15 @@ def ta(nume):
         # time.sleep(1.5)
         return -1
     cal.save(rawData, nume, 'X')
-    with open("cod.txt", mode='w') as f:
+    with open("config/cod.txt", mode='w') as f:
         f.write(str('10'))
     f.close()
     time.sleep(1)
-    with open("cod.txt", mode='w') as f:
+    with open("config/cod.txt", mode='w') as f:
         f.write(str('2'))
     f.close()
     rawData = np.append(rawData, cal.asse(nume, '2', sensor), axis=0)
-    with open('cod.txt', mode='r') as f:
+    with open('config/cod.txt', mode='r') as f:
         codn = int(f.read())
     f.close()
     print(codn)
@@ -421,15 +421,15 @@ def ta(nume):
         # time.sleep(1.5)
         return -1
     cal.save(rawData, nume, 'Y')
-    with open("cod.txt", mode='w') as f:
+    with open("config/cod.txt", mode='w') as f:
         f.write(str('20'))
     f.close()
     time.sleep(1)
-    with open("cod.txt", mode='w') as f:
+    with open("config/cod.txt", mode='w') as f:
         f.write(str('3'))
     f.close()
     rawData = np.append(rawData, cal.asse(nume, '3', sensor), axis=0)
-    with open('cod.txt', mode='r') as f:
+    with open('config/cod.txt', mode='r') as f:
         codn = int(f.read())
     f.close()
     print(codn)
@@ -437,7 +437,7 @@ def ta(nume):
         print("Annulla........")
         # time.sleep(1.5)
         return -1
-    with open("cod.txt", mode='w') as f:
+    with open("config/cod.txt", mode='w') as f:
         f.write(str('30'))
     f.close()
     cal.save(rawData, nume,
@@ -449,14 +449,14 @@ def vta(nume, asse):
     print(rawData)
     if asse == 'X':
         rawData = np.append(rawData, cal.asse(nume, '1', sensor), axis=0)
-        with open("cod.txt", mode='w') as f:
+        with open("config/cod.txt", mode='w') as f:
             f.write(str('10'))
         f.close()
         cal.save(rawData, nume, asse)
 
     if asse == 'Y':
         rawData = np.append(rawData, cal.asse(nume, '2', sensor), axis=0)
-        with open("cod.txt", mode='w') as f:
+        with open("config/cod.txt", mode='w') as f:
             f.write(str('20'))
         f.close()
         cal.save(rawData, nume, asse)
@@ -464,7 +464,7 @@ def vta(nume, asse):
     if asse == 'Z':
         rawData = np.append(rawData, cal.asse(nume, '3', sensor), axis=0)
 
-        with open("cod.txt", mode='w') as f:
+        with open("config/cod.txt", mode='w') as f:
             f.write(str('30'))
         f.close()
         cal.save(rawData, nume, asse)
@@ -854,10 +854,10 @@ if __name__ == "__main__":
 
         measure.set_sensor_odr(sensor, g_box_config.output_data_rate)
 
-        cert = os.getcwd() + '/cert.pem'
-        key = os.getcwd() + '/priv_key.pem'
+        cert = os.getcwd() + '/config/cert.pem'
+        key = os.getcwd() + '/config/priv_key.pem'
         nssid = os.popen("sudo iwgetid -r").read()
         display.scrivi("    IPS", "", "Dispostivo Pronto", "WiFi: " + nssid, iip + ":443")
-        app.run(debug=True, host=iip, port=int(443), ssl_context=('cert.pem', 'priv_key.pem'))
+        app.run(debug=True, host=iip, port=int(443), ssl_context=('config/cert.pem', 'config/priv_key.pem'))
     except KeyboardInterrupt:
         pass

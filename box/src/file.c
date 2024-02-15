@@ -75,7 +75,7 @@ int main(float h)
 	double maxval, norm, btqb, *eigen_real3, *eigen_imag3, *Dz, *vdz, *SQ, *A_1, hm, norm1, norm2, norm3;
 	double x, y, z;
 	FILE *fp;
-	fp = fopen("mag.txt", "r");
+	fp = fopen("config/mag.txt", "r");
 	while(fgets(buf, 100, fp) != NULL)
 	nlines++;
 	rewind(fp);
@@ -212,7 +212,7 @@ int main(float h)
  	B[0] = -B[0];     // x-axis combined bias
  	B[1] = -B[1];     // y-axis combined bias
  	B[2] = -B[2];     // z-axis combined bias
-	fp = fopen("bias.txt", "wb");
+	fp = fopen("config/bias.txt", "wb");
 	for(i = 0; i < 3; i++)
 	{
   		printf("%lf\r\n", B[i]);
@@ -260,7 +260,7 @@ int main(float h)
  	A_1 = (double*)malloc(3 * 3 * sizeof(double));
  	for(i = 0; i < 9; i++)
    		A_1[i] = SQ[i] * hm / hmb;
-	fp = fopen("matrix.txt", "wb");
+	fp = fopen("config/matrix.txt", "wb");
  	for(i = 0; i < 3; i++)
  	{
    		printf("%lf %lf %lf\r\n", A_1[i*3], A_1[i*3+1], A_1[i*3+2]);
