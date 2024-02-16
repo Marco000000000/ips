@@ -1,0 +1,305 @@
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>ISP</title>
+    <link rel="stylesheet" href="static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="static/js/bootstrap.bundle.min.js"></script>
+    <meta name="theme-color" content="#712cf9">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+  integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+  crossorigin=""/>
+	<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+  integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+  crossorigin=""></script>
+	<script src="static/js/Leaflet.ImageOverlay.Rotated.js"></script>
+	<script src="static/js/jquery-3.3.1.js"></script>
+	<style>
+
+		.bd-placeholder-img {
+		  font-size: 1.125rem;
+		  text-anchor: middle;
+		  -webkit-user-select: none;
+		  -moz-user-select: none;
+		  user-select: none;
+		}
+  
+		@media (min-width: 768px) {
+		  .bd-placeholder-img-lg {
+			font-size: 3.5rem;
+		  }
+		}
+  
+		.b-example-divider {
+		  height: 3rem;
+		  background-color: rgba(0, 0, 0, .1);
+		  border: solid rgba(0, 0, 0, .15);
+		  border-width: 1px 0;
+		  box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+		}
+  
+		.b-example-vr {
+		  flex-shrink: 0;
+		  width: 1.5rem;
+		  height: 100vh;
+		}
+  
+		.bi {
+		  vertical-align: -.125em;
+		  fill: currentColor;
+		}
+  
+		.nav-scroller {
+		  position: relative;
+		  z-index: 2;
+		  height: 2.75rem;
+		  overflow-y: hidden;
+		}
+  
+		.nav-scroller .nav {
+		  display: flex;
+		  flex-wrap: nowrap;
+		  padding-bottom: 1rem;
+		  margin-top: -1px;
+		  overflow-x: auto;
+		  text-align: center;
+		  white-space: nowrap;
+		  -webkit-overflow-scrolling: touch;
+		}
+	  </style>
+	  <link href="static/css/cover.css" rel="stylesheet">
+</head>
+<body class="d-flex h-100 text-center text-bg-dark">    
+        
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+            {% include 'navbar_component.html' %}
+        </header>
+        <main class="px-3">
+			<div class="row" id="corpo">
+				<div class="col" id="mappa" style="display:block; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; padding-right: 0px;">
+					
+				</div>
+            </div>
+			<br>
+			<div class="row" id="tastia">
+				<div class="col-2"></div>
+				<div class="col-3">
+						<input type="button" id="btnelimina" class="btn btn-danger" value="Clear"></input>
+				</div>
+				<div class="col-2"></div>
+				<div class="col-3">
+					<input type="button" id="btn" class="btn btn-success" value="Fine"></input>
+			</div>
+				<div class="col-2"></div>
+			</div>
+    	</main>
+        <footer class="mt-auto text-white-50">
+            <p>Create by  <p class="text-white">Papa Andrea Valentino </p></p>
+        </footer>
+    </div>
+
+	
+    
+	
+	
+
+	<script type="text/javascript">
+
+		var allMarkers = [];	//new Array();
+
+
+		function getParameterByName(name)
+		{
+			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+			var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+			var results = regex.exec(location.search);
+			return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+		}
+
+		var lat = parseFloat(getParameterByName('lat'));
+		var lon = parseFloat(getParameterByName('lon'));
+		//alert(lat + " - " + lon);
+
+		var hio = 0;
+		var wio = 0;
+		
+		const url = localStorage.getItem('my-image');
+		const img = new Image();
+		img.src = url;
+		document.getElementById('mappa').innerHTML += "<img src='" + url + "' alt='Map' width='100%'' height='100%'' id='screatm' onclick='clickHotspotImage(event);'/>";
+		
+		var imgWidth;
+		var imgHeight;
+
+		
+
+		function clickHotspotImage(event)
+		{
+        	var img = document.getElementById("screatm");
+        	imgWidth = img.naturalWidth;
+        	imgHeight = img.naturalHeight;
+        	var visWidth = img.width;
+        	var visHeight = img.height;
+        	var xCoordinate = event.offsetX;
+        	var yCoordinate = event.offsetY;
+        	var xReal = parseInt(xCoordinate*(imgWidth/visWidth));
+        	var yReal = parseInt(yCoordinate*(imgHeight/visHeight));
+			var xPro = 0;
+			var yPro =0;
+			if(imgWidth >= imgHeight)
+			{
+				wr = parseInt(2000);
+				//hr = parseInt((imgWidth*2000)/imgHeight);
+				hr = parseInt(2000*(imgHeight/imgWidth));
+				xPro = parseInt(xCoordinate*(wr/visWidth));
+				yPro = parseInt(yCoordinate*(hr/visHeight));
+			}
+			else
+			{
+				hr = parseInt(2000);
+				//wr = parseInt((imgHeight*2000)/imgWidth);
+				wr = parseInt(2000*(imgWidth/imgHeight));
+				xPro = parseInt(xCoordinate*(wr/visWidth));
+				yPro = parseInt(yCoordinate*(hr/visHeight));
+			}
+			
+
+			//px = (xCoordinate+img.offsetLeft)-5;
+            //py = (yCoordinate+img.offsetTop)-5;
+
+			var id = generateRandomString();
+			//document.getElementById('mappa').innerHTML += "<div id='" + id + "' style='position: absolute; left:" + px  + "; top: " + py  + "; width: 10px; height: 10px; background-color: rgba(255, 0, 0, .90);' onclick='clickDiv(event);'></div>";
+
+			disegna(id, xCoordinate, yCoordinate, img);
+			
+			const marker = {
+				x_Real: xReal,
+				y_Real: yReal,
+				x_Pro: xPro,
+				y_Pro: yPro,
+				xp: xCoordinate,
+				yp: yCoordinate,
+				idp: id
+			};
+
+			allMarkers.push(marker);
+			
+			console.log(allMarkers);
+
+      	}
+
+		function disegna(id, x, y, img)
+		{
+			px = (x+img.offsetLeft)-3;
+            py = (y+img.offsetTop)-3;
+
+			document.getElementById('mappa').innerHTML += "<div id='" + id + "' style='position: absolute; left:" + px  + "; top: " + py  + "; width: 6px; height: 6px; background-color: rgba(255, 0, 0, .90);' onclick='clickDiv(event);'></div>";
+
+		}
+
+		function elimina(elementId, k)
+		{
+			//console.log("hai eliminato il punto: " + elementId);
+			var divtemp = document.getElementById(elementId);
+			divtemp.remove();
+			if(k==1)
+			{
+				var i;
+				var n = allMarkers.length;
+				for(i=0; i<n; i++)
+				{
+					if(allMarkers[i].idp==elementId)
+					{
+						allMarkers.splice(i, 1);
+						break;
+					}
+				}
+			}
+		}
+
+		function clearAll()
+		{
+			var i;
+			var n = allMarkers.length;
+			for(i=0; i<n; i++)
+			{
+				var divtemp = document.getElementById(allMarkers[i].idp);
+				divtemp.remove();
+			}	
+			allMarkers = [];
+		}
+
+		function clickDiv(event)
+		{
+			var elementId = event.target.id;
+			elimina(elementId, 1);
+		}
+
+
+		function generateRandomString()
+		{
+			var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+			var length = 15;
+			var randomString = "";
+
+			for (var i = 0; i < length; i++)
+			{
+				var randomIndex = Math.floor(Math.random() * characters.length);
+				randomString += characters.charAt(randomIndex);
+			}
+
+			return randomString;
+		}
+		
+
+		window.addEventListener("resize", function()
+		{
+  			// Funzione da eseguire quando viene ridimensionata la finestra
+  			console.log("La finestra è stata ridimensionata");
+			var i;
+			var n = allMarkers.length;
+			for(i=0; i<n; i++)
+			{
+				var id = allMarkers[i].idp;
+				elimina(id, 0);
+				var img = document.getElementById("screatm");
+				var imgWidth = img.naturalWidth;
+        		var imgHeight = img.naturalHeight;
+        		var visWidth = img.width;
+        		var visHeight = img.height;
+        		var xCoordinate = parseInt(allMarkers[i].x_Real*(visWidth/imgWidth));
+        		var yCoordinate = parseInt(allMarkers[i].y_Real*(visHeight/imgHeight));
+        		
+
+				disegna(id, xCoordinate, yCoordinate, img);
+			}
+		});
+
+		const btn = document.getElementById("btn");
+		const btnelimina = document.getElementById("btnelimina");
+
+		btn.addEventListener('click', ()=> {
+		
+			
+			console.log("i markers sono: " + allMarkers);
+			localStorage.setItem('my-image',url);
+			localStorage.setItem('Markers', JSON.stringify(allMarkers));
+			localStorage.setItem('imgW',imgWidth);
+			localStorage.setItem('imgH',imgHeight);
+			window.location.href = "map?lat=" + lat +"&lon="+lon;
+		})
+
+		btnelimina.addEventListener('click', ()=> {
+		
+			clearAll();
+			console.log(allMarkers);
+			
+		})
+		</script>
+	
+	
+	
+</body>
+</html>

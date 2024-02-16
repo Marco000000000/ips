@@ -1,0 +1,119 @@
+<html>
+  <head>
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-store" />
+    <meta http-equiv="expires" content="-1" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>ISP</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
+
+    <meta name="theme-color" content="#712cf9">
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/cover.css" rel="stylesheet">
+  </head>
+
+  <body class="d-flex h-100 text-center text-bg-dark">    
+        
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+            {% include 'navbar_component.html' %}
+        </header>
+        <main class="px-3">
+            <h1>Indoor Positioning System</h1>
+                <p class="lead">CALIBRAZIONE COMPLETATA</p>
+                <div class="row" id="xy">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-8">
+                      <img src="{{ url_for('static', filename='xy.png', token=s)}}" width="100%"/>
+                    </div>
+                </div>
+                <div class="row" id="yz">
+                  <div class="col-2">
+                  </div>
+                  <div class="col-8">
+                      <img src="{{ url_for('static', filename='yz.png', token=s)}}" width="100%"/>
+                  </div>
+              </div>
+              <div class="row" id="xz">
+                <div class="col-2">
+                </div>
+                <div class="col-8">
+                    <img src="{{ url_for('static', filename='xz.png', token=s)}}" width="100%"/>
+                </div>
+            </div>
+            <div class="row" id="3d">
+              <div class="col-2">
+              </div>
+              <div class="col-8">
+                  <img src="{{ url_for('static', filename='3d.png', token=s)}}" width="100%"/>
+              </div>
+          </div>
+        </main>
+        <footer class="mt-auto text-white-50">
+            <p>Create by  <p class="text-white">Papa Andrea Valentino </p></p>
+        </footer>
+    </div>
+  </body>
+</html>
