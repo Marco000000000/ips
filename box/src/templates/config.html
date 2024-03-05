@@ -208,7 +208,6 @@
     window.onload = function() 
     {
         const odr = document.getElementById("odr");
-        const cali = document.getElementById("cali");
         const inter = document.getElementById("inter");
         const colormap = document.getElementById("colormap");
         const ble = document.getElementById("ble");
@@ -226,7 +225,6 @@
               .then((data) => {
                     console.log(data);
                     var mydata = JSON.parse(data);
-                    cali.value = mydata['cali'];
                     colormap.value = mydata['colormap'];
                     inter.value = mydata['inter'];
                     odr.value = mydata['odr'];
@@ -243,7 +241,6 @@
     function sendconf()
     {
     const odr = document.getElementById("odr").value;
-    const cali = document.getElementById("cali").value;
     const inter = document.getElementById("inter").value;
     const colormap = document.getElementById("colormap").value;
     const ble = document.getElementById("ble").value;
@@ -276,7 +273,7 @@
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify({ "odr": odr, "cali":cali, "inter":inter, "colormap":colormap, "ble":ble, "server":server, "port":port })
+              body: JSON.stringify({ "odr": odr, "inter":inter, "colormap":colormap, "ble":ble, "server":server, "port":port })
             })
             .then((response) => {
                 if(!response.ok){
