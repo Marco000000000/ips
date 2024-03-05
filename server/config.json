@@ -1,5 +1,5 @@
 {
   "DATABASE_HOST": "localhost",
-  "DATABASE_USER": "root",
-  "DATABASE_PSW": "password"
+  "DATABASE_USER": "[inserire_nome_utente]",
+  "DATABASE_PSW": "[inserire_password]"
 }
