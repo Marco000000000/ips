@@ -93,6 +93,7 @@ def upconf():
         return "Nessun file inviato"
     rootdir = os.getcwd() + "\\config\\" + filename
     print(rootdir)
+    print(request.files)
     file = request.files['file']
     file.save(rootdir)  # Salva il file nella directory corrente con il nome "uploaded_file.txt"
 
@@ -164,7 +165,7 @@ def update_tables():
         file.readline()
         for line in file:
             point_metadata = line.split(',')
-
+            print(line)
             point_ID = point_metadata[1]
             point_Long = float(point_metadata[2])
             point_Lat = float(point_metadata[3])
@@ -173,8 +174,8 @@ def update_tables():
 
             db_query = ("INSERT INTO my_schema.point VALUES (%s, %s, %s, %s, %s, %s)")
             db_data = (token, point_ID, point_CoordX, point_CoordY, point_Long, point_Lat)
-
             db_cursor.execute(db_query, db_data)
+            db.commit()
 
     with open(data_magn_filepath, 'r') as file:
         for line in file:
@@ -189,9 +190,12 @@ def update_tables():
 
             db_query = ("INSERT INTO my_schema.magnetic_field VALUES (%s, %s, %s, %s, %s, %s)")
             db_data = (token, point_ID, point_magX, point_magY, point_magZ, point_magM)
-
-            db_cursor.execute(db_query, db_data)
-
+            print([token,point_ID])
+            try:
+                db_cursor.execute(db_query, db_data)
+            except Exception as e:
+                print(e)
+                pass
     with open(data_bluetooth_filepath, 'r') as file:
         for line in file:
             point_data = line.split('\t')
@@ -203,9 +207,13 @@ def update_tables():
 
             db_query = ("INSERT INTO my_schema.bluetooth VALUES (%s, %s, %s, %s)")
             db_data = (token, point_ID, point_Mac, point_Rssi)
-
-            db_cursor.execute(db_query, db_data)
-
+            print([token, point_ID, point_Mac])
+            try:
+                db_cursor.execute(db_query, db_data)
+            except Exception as e:
+                print(e)
+                pass
+            
     with open(data_wifi_filepath, 'r') as file:
         for line in file:
             point_data = line.split('\t')
@@ -222,9 +230,12 @@ def update_tables():
             db_query = ("INSERT INTO my_schema.wifi VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
             db_data = (
             token, point_ID, point_MAC, point_SSID, point_Channel, point_Frequency, point_Quality, point_RSSI)
-
-            db_cursor.execute(db_query, db_data)
-
+            print([token,point_ID,point_MAC,point_Frequency,point_Channel])
+            try:
+                db_cursor.execute(db_query, db_data)
+            except Exception as e:
+                print(e)
+                pass
     db.commit()
     db_cursor.close()
     db.close()

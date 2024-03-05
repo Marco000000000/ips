@@ -1,6 +1,0 @@
-nome	Misura3
-numero	1
-wifi	1
-ble	1
-ble-macs	['78:20:b2:6f:e4:d8']
-wifi-macs	['A0:93:51:94:EF:E0']

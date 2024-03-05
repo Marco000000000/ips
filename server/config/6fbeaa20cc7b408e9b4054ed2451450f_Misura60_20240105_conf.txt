@@ -1,6 +1,0 @@
-nome	Misura60
-numero	1
-wifi	1
-ble	1
-ble-macs	[]
-wifi-macs	[]

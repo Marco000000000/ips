@@ -2,7 +2,8 @@ import math
 
 import melopero_lsm9ds1 as mp
 import numpy as np
-
+import os
+from time import sleep
 import display
 
 
@@ -11,6 +12,9 @@ import display
 # sensor.use_i2c()
 
 def set_sensor_odr(sensor, odr):
+    os.system('i2cdetect -y 1')
+    sleep(1)
+    os.system('i2cdetect -y 1')
     if odr == 0.625:
         sensor.set_mag_odr(mp.LSM9DS1.MAG_ODR_0_625Hz)
     elif odr == 1.25:
@@ -53,10 +57,10 @@ def singola(sensor):
         c = math.sqrt((mx * mx) + (my * my) + (mz * mz))
         # np.array(mx, my, mz)
         date = np.append(date, [currMeas], axis=0)
-        tx = "X: {:.3f} µT ".format(mx)
-        ty = "Y: {:.3f} µT ".format(my)
-        tz = "Z: {:.3f} µT ".format(mz)
-        tc = "CM: {:.3f} µT ".format(c)
+        tx = "X: {:.3f} uT ".format(mx)
+        ty = "Y: {:.3f} uT ".format(my)
+        tz = "Z: {:.3f} uT ".format(mz)
+        tc = "CM: {:.3f} uT ".format(c)
         display.scrivi(tx, ty, tz, tc, "")
         return mx, my, mz, c
     except OSError as e:
@@ -91,9 +95,9 @@ def multi(sensor, num):
     my = mdate[1]
     mz = mdate[2]
     c = math.sqrt((mx * mx) + (my * my) + (mz * mz))
-    tx = "X: {:.3f} µT ".format(mx)
-    ty = "Y: {:.3f} µT ".format(my)
-    tz = "Z: {:.3f} µT ".format(mz)
-    tc = "CM: {:.3f} µT ".format(c)
+    tx = "X: {:.3f} uT ".format(mx)
+    ty = "Y: {:.3f} uT ".format(my)
+    tz = "Z: {:.3f} uT ".format(mz)
+    tc = "CM: {:.3f} uT ".format(c)
     display.scrivi(tx, ty, tz, tc, "")
     return mx, my, mz, c

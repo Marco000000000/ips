@@ -1,6 +1,0 @@
-nome	Misura02
-numero	1
-wifi	1
-ble	1
-ble-macs	[]
-wifi-macs	['28:EE:52:E7:14:5E']

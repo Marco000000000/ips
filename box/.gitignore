@@ -1,4 +1,5 @@
-__pycache__/
-static/config
-static/data
-static/uploads
+src/__pycache__/
+src/static/config
+src/static/data
+src/static/uploads
+venv

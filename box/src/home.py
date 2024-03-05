@@ -333,10 +333,10 @@ def view_calibration_plot():
     return ""
 
 
-@app.route("/cali")
-def cali():
-    prnt()
-    return render_template('/cali.html')
+#@app.route("/cali")
+#def cali():
+#    prnt()
+#    return render_template('/cali.html')
 
 
 @app.route("/cali", methods=("POST", "GET"))
