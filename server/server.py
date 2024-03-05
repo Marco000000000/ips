@@ -190,7 +190,7 @@ def update_tables():
 
             db_query = ("INSERT INTO my_schema.magnetic_field VALUES (%s, %s, %s, %s, %s, %s)")
             db_data = (token, point_ID, point_magX, point_magY, point_magZ, point_magM)
-            print([token,point_ID])
+            #print([token,point_ID])
             try:
                 db_cursor.execute(db_query, db_data)
             except Exception as e:
@@ -207,7 +207,7 @@ def update_tables():
 
             db_query = ("INSERT INTO my_schema.bluetooth VALUES (%s, %s, %s, %s)")
             db_data = (token, point_ID, point_Mac, point_Rssi)
-            print([token, point_ID, point_Mac])
+            #print([token, point_ID, point_Mac])
             try:
                 db_cursor.execute(db_query, db_data)
             except Exception as e:
@@ -230,7 +230,7 @@ def update_tables():
             db_query = ("INSERT INTO my_schema.wifi VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
             db_data = (
             token, point_ID, point_MAC, point_SSID, point_Channel, point_Frequency, point_Quality, point_RSSI)
-            print([token,point_ID,point_MAC,point_Frequency,point_Channel])
+            #print([token,point_ID,point_MAC,point_Frequency,point_Channel])
             try:
                 db_cursor.execute(db_query, db_data)
             except Exception as e:
